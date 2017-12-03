@@ -1,1 +1,4 @@
-console.log('hello world!!!');
+const greet = () => {
+  console.log('hello es6!!!');
+};
+greet();
