@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   watch: true,
@@ -10,6 +11,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            js: 'babel-loader'
+          }
+        }
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -43,11 +53,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        drop_console: false
-      },
-    }),
+    new UglifyJsPlugin(),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
@@ -55,7 +61,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.js',
+      'vue$': 'vue/dist/vue.esm.js',
     },
   },
 };
