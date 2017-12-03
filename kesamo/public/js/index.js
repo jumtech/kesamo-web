@@ -1,4 +1,4 @@
 const greet = () => {
-  console.log('hello es6!!!');
+  console.log('hello eslint!!!');
 };
 greet();

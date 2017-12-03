@@ -17,6 +17,11 @@ module.exports = {
           presets: ['env']
         },
       }],
+    },{
+      enforce: 'pre',
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'eslint-loader',
     }],
   },
 };
