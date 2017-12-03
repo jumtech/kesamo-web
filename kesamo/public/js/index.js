@@ -7,4 +7,5 @@ window.onload = () => {
       text: 'hello vue'
     }
   });
+  console.log('$: ',$)
 };

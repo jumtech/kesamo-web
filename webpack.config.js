@@ -31,10 +31,14 @@ module.exports = {
         drop_console: false
       },
     }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
   ],
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.js'
-    }
-  }
+      vue: 'vue/dist/vue.js',
+    },
+  },
 };
