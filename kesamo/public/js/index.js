@@ -1,4 +1,10 @@
-const greet = () => {
-  console.log('hello uglify!!!');
+import Vue from 'vue';
+
+window.onload = () => {
+  new Vue({
+    el: '#container',
+    data: {
+      text: 'hello vue'
+    }
+  });
 };
-greet();
