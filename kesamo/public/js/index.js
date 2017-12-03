@@ -1,4 +1,4 @@
 const greet = () => {
-  console.log('hello eslint!!!');
+  console.log('hello uglify!!!');
 };
 greet();

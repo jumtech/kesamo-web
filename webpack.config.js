@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -24,4 +25,11 @@ module.exports = {
       loader: 'eslint-loader',
     }],
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        drop_console: false
+      },
+    }),
+  ],
 };
