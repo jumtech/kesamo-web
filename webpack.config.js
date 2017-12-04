@@ -38,18 +38,6 @@ module.exports = {
         exclude: /node_modules|vendor/,
         loader: 'eslint-loader',
       },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader?name=kesamo/public/vendor/semantic-ui/themes/default/assets/fonts/[name].[ext]'
-      },
-      {
-        test: /\.(jpg|jpeg|png)$/,
-        loaders: 'url-loader'
-      },
     ],
   },
   plugins: [
