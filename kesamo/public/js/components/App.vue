@@ -1,18 +1,17 @@
 <template lang="pug">
-.message
-  | {{message}}
+.container
+  tab-view
+  router-view
 </template>
+
+<style lang="stylus" scoped>
+</style>
+
 <script>
+import TabView from './TabView.vue';
 export default {
-  data () {
-    return {
-      message: 'hello vue-loader'
-    };
+  components: {
+    TabView
   }
 };
 </script>
-<style lang="stylus" scoped>
-.message {
-  color: red;
-}
-</style>
