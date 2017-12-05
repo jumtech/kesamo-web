@@ -4,7 +4,10 @@
   "description": "kesamo is the best morning routine manager.",
   "private": true,
   "scripts": {
-    "start": "node ./kesamo/bin/www"
+    "start": "node ./kesamo/bin/www",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "deploy": "./scripts/deploy.sh"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
