@@ -24,6 +24,8 @@
 </style>
 
 <script>
+import firebase from 'firebase';
+
 export default {
   data() {
     return {
@@ -42,7 +44,12 @@ export default {
   methods: {
     go(n) {
       this.currentIndex += n;
-      console.log("this.currentIndex: ",this.currentIndex);
+      // 認証
+      const user = firebase.auth().currentUser;
+      if (user) {
+        console.log("user: ",user);
+        firebase.database().ref('users/' + user.uid).set({routines: ["Wake up!", "Put away the futon!"]});
+      }
     }
   }
 };
