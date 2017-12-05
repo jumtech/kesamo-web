@@ -24,6 +24,8 @@
 </style>
 
 <script>
+import fb from '../firebase-adapter';
+
 export default {
   data() {
     return {
@@ -42,7 +44,6 @@ export default {
   methods: {
     go(n) {
       this.currentIndex += n;
-      console.log("this.currentIndex: ",this.currentIndex);
     }
   }
 };

@@ -52,4 +52,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
     },
   },
+  externals: {
+    firebase: 'firebase'
+  },
 };
