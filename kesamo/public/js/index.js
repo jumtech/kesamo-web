@@ -7,6 +7,7 @@ import fb from './firebase-adapter';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 });
 fb.init();
