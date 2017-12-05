@@ -17,7 +17,7 @@
 
 <script>
 import TabView from './TabView.vue';
-import firebase from 'firebase';
+import fb from '../firebase-adapter';
 
 export default {
   components: {
@@ -29,39 +29,22 @@ export default {
     }
   },
   created() {
-    console.log('firebase.auth().currentUser: ',firebase.auth().currentUser)
-    firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      console.log('user: ',user);
-      this.user = user;
-    } else {
-      console.log('user: ',user);
-    }
-    });
-
-
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     console.log('user: ',user);
+    //     this.user = user;
+    //   } else {
+    //     console.log('user: ',user);
+    //   }
+    // });
   },
   methods: {
     login() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          firebase.auth().signInWithPopup(provider).then((result) => {
-            if (result) this.user = result.user;
-          }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            const credential = error.credential;
-            console.error(errorCode + ' error: ' + errorMessage);
-          });
-        })
-        .catch((error) => {
-          // Handle Errors here.
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
+      fb.login((result) => {
+        if (result) this.user = result.user;
+      },(err) => {
+        console.warn('login error: ', err);
+      });
     },
   }
 };

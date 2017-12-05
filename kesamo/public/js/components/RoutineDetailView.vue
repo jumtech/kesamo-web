@@ -24,7 +24,7 @@
 </style>
 
 <script>
-import firebase from 'firebase';
+import fb from '../firebase-adapter';
 
 export default {
   data() {
@@ -44,12 +44,6 @@ export default {
   methods: {
     go(n) {
       this.currentIndex += n;
-      // 認証
-      const user = firebase.auth().currentUser;
-      if (user) {
-        console.log("user: ",user);
-        firebase.database().ref('users/' + user.uid).set({routines: ["Wake up!", "Put away the futon!"]});
-      }
     }
   }
 };

@@ -66,7 +66,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import firebase from 'firebase';
+import fb from '../firebase-adapter';
 
 export default {
   components: {
@@ -80,11 +80,12 @@ export default {
     };
   },
   created() {
-    this.routines = [
-      { title: 'Wake up!' },
-      { title: 'Put away the futon!' },
-      { title: 'Brush your theeth!' },
-    ]
+    fb.addValueEventListener('routines', (snapshot) => {
+      if(snapshot.val()) {
+        this.routines = snapshot.val();
+      }
+      console.log("snapshot.val(): ", snapshot.val());
+    });
   },
   methods: {
     select(i) {
@@ -93,27 +94,33 @@ export default {
     createRoutine() {
       const targetIndex = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routines.length;
       this.routines.splice(targetIndex, 0, {title: ''});
+      this.commitRoutines(this.routines);
     },
     startEdit(i) {
       this.editingIndex = i;
     },
     saveRoutine() {
       this.editingIndex = null;
+      this.commitRoutines(this.routines);
     },
     deleteRoutine() {
       this.routines.splice(this.editingIndex, 1);
       this.selectedIndex = null;
       this.editingIndex = null;
+      this.commitRoutines(this.routines);
     },
     endDrag(e) {
       this.select(e.newIndex);
+      this.commitRoutines(this.routines);
+    },
+    commitRoutines(routines) {
+      fb.updateRoutines(routines);
     },
     logout() {
-      firebase.auth().signOut().then(function() {
+      fb.logtout(() => {
         location.href = '/';
-        console.log('logouted');
-      }).catch(function(error) {
-        console.log('login error: ', error);
+      }, (err) => {
+        console.error('logout error: ', err);
       });
     }
   }

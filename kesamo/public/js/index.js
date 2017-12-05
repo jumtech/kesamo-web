@@ -2,14 +2,16 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './components/App.vue';
 import routes from './routes'
-import { FIREBASE_CONFIG } from  './_config';
-import firebase from 'firebase';
+import fb from './firebase-adapter';
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes
 });
+fb.init();
+console.log('fb.init()');
+console.log('fb: ',fb);
 
 window.onload = () => {
   new Vue({
@@ -19,12 +21,3 @@ window.onload = () => {
   });
 };
 
-const config = {
-  apiKey: FIREBASE_CONFIG.API_KEY,
-  authDomain: FIREBASE_CONFIG.AUTH_DOMAIN,
-  databaseURL: FIREBASE_CONFIG.DATABASE_URL,
-  projectId: FIREBASE_CONFIG.PROJECT_ID,
-  storageBucket: FIREBASE_CONFIG.STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_CONFIG.MESSAGING_SENDER_ID
-};
-firebase.initializeApp(config);
