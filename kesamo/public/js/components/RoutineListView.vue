@@ -1,11 +1,11 @@
 <template lang='pug'>
 .container
   ul.list
-    draggable(v-model='routines' @end='endDrag')
-      li.list-item(v-for='(routine, index) in routines' :class='{selected: selectedIndex === index}')
+    draggable(v-model='routineValues' @end='endDrag')
+      li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
         template(v-if='editingIndex === index')
           p.title(@click='select(index)')
-            input(v-model='routines[index].title' @blur='saveRoutine(index)')
+            input(v-model='routineValues[index].title' @blur='endEdit()')
           .delete.icon(@click='deleteRoutine(index)')
             i(class='fa fa-trash' aria-hidden='true')
         template(v-else)
@@ -67,54 +67,69 @@
 <script>
 import draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
+import Routines from '../models/Routines';
 
 export default {
   components: {
     draggable
   },
+  props: {
+    routines: { // 親から受け取ったRoutines class(子はread only)
+      type: Routines,
+      default: null,
+    },
+  },
   data() {
     return {
       selectedIndex: null,
       editingIndex: null,
-      routines: [],
+      routineValues: [], // Routines classのvaluesのみ
     };
   },
   created() {
-    fb.addValueEventListener('routines', (snapshot) => {
-      if(snapshot.val()) {
-        this.routines = snapshot.val();
-      }
-      console.log("snapshot.val(): ", snapshot.val());
-    });
+    if (this.routines) {
+      this.routineValues = this.routines.getValues();
+    }
+    console.log('[routineListView created]this.routineValues: ',this.routineValues);
+  },
+  watch: {
+    routines: {
+      handler(val) {
+        console.log('parent routines changed: ',val);
+        this.routineValues = val.values;
+      },
+      deep: true
+    }
   },
   methods: {
     select(i) {
       this.selectedIndex = i;
     },
     createRoutine() {
-      const targetIndex = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routines.length;
-      this.routines.splice(targetIndex, 0, {title: ''});
-      this.commitRoutines(this.routines);
+      const i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
+      this.routineValues.splice(i, 0, {title: ''});
+      this.updateRoutines(this.routineValues);
     },
     startEdit(i) {
       this.editingIndex = i;
     },
-    saveRoutine() {
+    endEdit() {
       this.editingIndex = null;
-      this.commitRoutines(this.routines);
+      this.updateRoutines(this.routineValues);
     },
     deleteRoutine() {
-      this.routines.splice(this.editingIndex, 1);
+      this.routineValues.splice(this.editingIndex, 1);
       this.selectedIndex = null;
       this.editingIndex = null;
-      this.commitRoutines(this.routines);
+      this.updateRoutines(this.routineValues);
     },
     endDrag(e) {
       this.select(e.newIndex);
-      this.commitRoutines(this.routines);
+      this.updateRoutines(this.routineValues);
     },
-    commitRoutines(routines) {
-      fb.updateRoutines(routines);
+    updateRoutines(arr) {
+      this.$emit('routines-updated', arr);
+      // fb.updateRoutines(routines);
     },
     logout() {
       fb.logout(() => {

@@ -1,7 +1,7 @@
 <template lang="pug">
 .container
   tab-view
-  router-view.content(v-if="user")
+  router-view(:routines='routines' @routines-updated='updateRoutines').content(v-if="user")
   .login(v-else)
     button(@click="login")
       | Googleでログイン
@@ -18,6 +18,7 @@
 <script>
 import TabView from './TabView.vue';
 import fb from '../firebase-adapter';
+import Routines from '../models/Routines';
 
 export default {
   components: {
@@ -26,6 +27,7 @@ export default {
   data() {
     return {
       user: null,
+      routines: null,
     }
   },
   created() {
@@ -33,6 +35,10 @@ export default {
       console.log('[authStateChanged] user: ',user);
       if (user) {
         this.user = user;
+        fb.addValueEventListener('routines', (snapshot) => {
+          console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
+          this.routines = snapshot.val() ? new Routines(snapshot.val()) : new Routines([]);
+        });
       }
     });
   },
@@ -45,6 +51,9 @@ export default {
       },(err) => {
         console.warn('login error: ', err);
       });
+    },
+    updateRoutines(values) {
+      this.routines.saveValues(values);
     },
   }
 };
