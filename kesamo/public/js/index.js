@@ -11,8 +11,6 @@ const router = new VueRouter({
   routes
 });
 fb.init();
-console.log('fb.init()');
-console.log('fb: ',fb);
 
 window.onload = () => {
   new Vue({

@@ -1,9 +1,10 @@
 <template lang='pug'>
 .container
-  p.title
-    | {{routines[currentIndex].title}}
-  .left.side(v-if='currentIndex > 0' @click='go(-1)')
-  .right.side(v-if='currentIndex < routines.length - 1' @click='go(1)')
+  template(v-if='routineValues && routineValues.length > 0')
+    p.title
+      | {{routineValues[currentIndex].title}}
+    .left.side(v-if='currentIndex > 0' @click='go(-1)')
+    .right.side(v-if='currentIndex < routineValues.length - 1' @click='go(1)')
 </template>
 
 <style lang='stylus' scoped>
@@ -24,22 +25,25 @@
 </style>
 
 <script>
-import fb from '../firebase-adapter';
+import Routines from '../models/Routines';
 
 export default {
   data() {
     return {
-      title: 'Wake up!',
-      routines: [],
+      routineValues: null,
       currentIndex: 0,
     };
   },
+  props: {
+    routines: {
+      type: Routines,
+      default: null
+    },
+  },
   created() {
-    this.routines = [
-      { title: 'Wake up!' },
-      { title: 'Put away the futon!' },
-      { title: 'Brush your theeth!' },
-    ]
+    if (this.routines) {
+      this.routineValues = this.routines.getValues();
+    }
   },
   methods: {
     go(n) {
