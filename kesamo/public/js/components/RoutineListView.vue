@@ -117,7 +117,7 @@ export default {
       fb.updateRoutines(routines);
     },
     logout() {
-      fb.logtout(() => {
+      fb.logout(() => {
         location.href = '/';
       }, (err) => {
         console.error('logout error: ', err);

@@ -29,19 +29,19 @@ export default {
     }
   },
   created() {
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   if (user) {
-    //     console.log('user: ',user);
-    //     this.user = user;
-    //   } else {
-    //     console.log('user: ',user);
-    //   }
-    // });
+    fb.addAuthStateChangedEventListener((user) => {
+      console.log('[authStateChanged] user: ',user);
+      if (user) {
+        this.user = user;
+      }
+    });
   },
   methods: {
     login() {
       fb.login((result) => {
-        if (result) this.user = result.user;
+        if (result && result.user) {
+          console.log('login succeeded.');
+        }
       },(err) => {
         console.warn('login error: ', err);
       });

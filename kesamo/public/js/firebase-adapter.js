@@ -44,6 +44,9 @@ export default {
       cb(snapshot);
     });
   },
+  addAuthStateChangedEventListener(cb) {
+    firebase.auth().onAuthStateChanged(cb);
+  },
   currentUser() {
     return  firebase.auth().currentUser;
   },
