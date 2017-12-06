@@ -5,7 +5,7 @@
       li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
         template(v-if='editingIndex === index')
           p.title(@click='select(index)')
-            input(v-model='routineValues[index].title' @blur='endEdit()')
+            input(:id='"input" + index' v-model='routineValues[index].title' @blur='endEdit(index)')
           .icon.delete(@click='deleteRoutine(index)')
             i(class='fa fa-trash' aria-hidden='true')
         template(v-else)
@@ -112,17 +112,23 @@ export default {
     createRoutine() {
       const i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
       this.routineValues.splice(i, 0, {title: ''});
-      this.updateRoutines(this.routineValues);
+      this.startEdit(i);
     },
     startEdit(i) {
       this.editingIndex = i;
+      this.focusInput(i);
     },
-    endEdit() {
+    focusInput(i) {
+      this.$nextTick(() => {
+        $('#input' + i).focus();
+      });
+    },
+    endEdit(i) {
       this.editingIndex = null;
       this.updateRoutines(this.routineValues);
     },
-    deleteRoutine() {
-      this.routineValues.splice(this.editingIndex, 1);
+    deleteRoutine(i) {
+      this.routineValues.splice(i, 1);
       this.selectedIndex = null;
       this.editingIndex = null;
       this.updateRoutines(this.routineValues);
