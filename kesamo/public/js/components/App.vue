@@ -3,16 +3,28 @@
   tab-view
   router-view(:routines='routines' @routines-updated='updateRoutines').content(v-if="user")
   .login(v-else)
-    button(@click="login")
-      | Googleでログイン
+    button.login-button(@click="login")
+      | Login with Google
 </template>
 
 <style lang="stylus" scoped>
+.container
+  width 100vw
+  height 100vh
 .content
   height calc(100vh - 60px)
 .login
-  & button
-    font-size 2.4rem
+  width 100vw
+  height calc(100vh - 60px)
+  display flex
+  justify-content center
+  align-items center
+  &-button
+    padding 10px 10px 10px 10px
+    font-size 1.2rem
+    background-color #538D8F
+    border-radius 5px
+    color white
 </style>
 
 <script>
