@@ -95,7 +95,12 @@ export default {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
     }
-    console.log('[routineListView created]this.routineValues: ',this.routineValues);
+    // handlar for all click event
+    $(document).click((e) => {
+      if(!$(e.target).closest('.list').length) {
+        this.selectedIndex = null;
+      }
+    });
   },
   watch: {
     routines: {
@@ -117,6 +122,9 @@ export default {
     },
     startEdit(i) {
       this.editingIndex = i;
+      this.$nextTick(() => {
+        this.selectedIndex = i;
+      });
       this.focusInput(i);
       this.oldRoutine = JSON.parse(JSON.stringify(this.routineValues[i]));
     },
