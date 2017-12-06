@@ -6,11 +6,11 @@
         template(v-if='editingIndex === index')
           p.title(@click='select(index)')
             input(v-model='routineValues[index].title' @blur='endEdit()')
-          .delete.icon(@click='deleteRoutine(index)')
+          .icon.delete(@click='deleteRoutine(index)')
             i(class='fa fa-trash' aria-hidden='true')
         template(v-else)
           p.title(@click='select(index)'): | {{routine.title}}
-          .edit.icon(@click='startEdit(index)')
+          .icon.edit(@click='startEdit(index)')
             i(class='fa fa-pencil' aria-hidden='true')
   .footer-button.create(@click='createRoutine')
     p: | ＋
@@ -34,6 +34,8 @@
     width 50px
     font-size 1.6rem
     padding 20px 20px 20px 10px
+    &.delete
+      color #B80228
 .logout
   width 100%
   font-size 1.6rem
