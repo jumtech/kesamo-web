@@ -21,17 +21,19 @@
 <style lang='stylus' scoped>
 .list-item
   display flex
-  font-size 1.6rem
+  align-items center
   border solid 1px #BFBFBF
   &.selected
     background-color #EBF7DA
   & .title
+    padding 0 20px 0 20px
     flex-grow 1
-    padding 20px 20px 20px 20px
+    font-size 1.6rem
     & input
+      width 100%
       font-size 1.6rem
   & .icon
-    width 50px
+    width 20px
     font-size 1.6rem
     padding 20px 20px 20px 10px
     &.delete
