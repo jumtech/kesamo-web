@@ -14,8 +14,8 @@
 .container
   display flex
   width 100%
-  height 150px
-  padding 5px 0 5px 0
+  height 60px
+  padding 2px 0 2px 0
 .tab-item
   flex-grow 1
   text-align center
@@ -25,7 +25,7 @@
   color #BFBFBF
   border-bottom solid 2px #BFBFBF
   & > .tab-link > a
-    font-size 10.8rem
+    font-size 4.8rem
   &.selected
     color #538D8F
     border-bottom solid 5px #538D8F

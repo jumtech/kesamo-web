@@ -21,43 +21,43 @@
 <style lang='stylus' scoped>
 .list-item
   display flex
-  font-size 3.2rem
+  font-size 1.6rem
   border solid 1px #BFBFBF
   &.selected
     background-color #EBF7DA
   & .title
     flex-grow 1
-    padding 50px 50px 50px 50px
+    padding 20px 20px 20px 20px
     & input
-      font-size 3.2rem
+      font-size 1.6rem
   & .icon
     width 50px
-    font-size 4.0rem
-    padding 50px 50px 50px 25px
+    font-size 1.6rem
+    padding 20px 20px 20px 10px
 .logout
   width 100%
-  font-size 2.4rem
+  font-size 1.6rem
   text-align center
   bottom 0
 .footer-button
   position absolute
-  bottom 30px
-  width 150px
-  height 150px
-  border-radius 75px
+  bottom 10px
+  width 60px
+  height 60px
+  border-radius 30px
   background-color #538D8F
-  font-size 6.0rem
+  font-size 2.4rem
   color #EBF7DA
   box-shadow 5px 5px 20px #7F7F7F
   &.create
-    right 210px
+    right 84px
   &.logout
-    right 30px
+    right 12px
   & p
     position absolute
     margin auto
-    width 100px
-    height 100px
+    width 40px
+    height 40px
     top 0
     right 0
     bottom 0

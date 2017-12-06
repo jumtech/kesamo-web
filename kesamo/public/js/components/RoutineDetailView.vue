@@ -13,15 +13,15 @@
   justify-content center
   align-items center
   & .side
-    width 200px
-    height calc(100vh - 150px)
+    width 80px
+    height calc(100vh - 60px)
     position absolute
     &.left
       left 0
     &.right
       right 0
   & .title
-    font-size 5.4rem
+    font-size 2.4rem
 </style>
 
 <script>

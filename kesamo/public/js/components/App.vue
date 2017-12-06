@@ -9,10 +9,10 @@
 
 <style lang="stylus" scoped>
 .content
-  height calc(100vh - 150px)
+  height calc(100vh - 60px)
 .login
   & button
-    font-size 5.4rem
+    font-size 2.4rem
 </style>
 
 <script>
