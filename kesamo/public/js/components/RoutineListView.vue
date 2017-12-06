@@ -88,6 +88,7 @@ export default {
       selectedIndex: null,
       editingIndex: null,
       routineValues: [], // Routines classのvaluesのみ
+      oldRoutine: null,
     };
   },
   created() {
@@ -117,6 +118,7 @@ export default {
     startEdit(i) {
       this.editingIndex = i;
       this.focusInput(i);
+      this.oldRoutine = JSON.parse(JSON.stringify(this.routineValues[i]));
     },
     focusInput(i) {
       this.$nextTick(() => {
@@ -125,7 +127,15 @@ export default {
     },
     endEdit(i) {
       this.editingIndex = null;
-      this.updateRoutines(this.routineValues);
+      if (this.routineValues[i].title === '') {
+        // restore old value when title empty
+        this.routineValues[i] = JSON.parse(JSON.stringify(this.oldRoutine));
+      }
+      if (this.routineValues[i].title === '') {
+        this.deleteRoutine(i);
+      } else {
+        this.updateRoutines(this.routineValues);
+      }
     },
     deleteRoutine(i) {
       this.routineValues.splice(i, 1);
