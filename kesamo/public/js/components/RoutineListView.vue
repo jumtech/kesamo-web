@@ -26,9 +26,10 @@
   &.selected
     background-color #EBF7DA
   & .title
-    padding 0 20px 0 20px
+    padding 20px 10px 20px 20px
     flex-grow 1
     font-size 1.6rem
+    word-break break-all
     & input
       width 100%
       font-size 1.6rem
