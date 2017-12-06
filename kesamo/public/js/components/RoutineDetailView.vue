@@ -61,6 +61,14 @@ export default {
       this.routineValues = this.routines.getValues();
     }
   },
+  watch: {
+    routines: {
+      handler(val) {
+        this.routineValues = val.values;
+      },
+      deep: true
+    }
+  },
   methods: {
     go(n) {
       this.currentIndex += n;
