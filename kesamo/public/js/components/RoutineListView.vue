@@ -12,7 +12,7 @@
           p.title(@click='select(index)'): | {{routine.title}}
           .icon.edit(@click='startEdit(index)')
             i(class='fa fa-pencil' aria-hidden='true')
-  .footer-button.create(@click='createRoutine')
+  .footer-button.create(@click='createRoutine()')
     p: | ＋
   .footer-button.logout(@click='logout')
     p: i(class='fa fa-sign-out' aria-hidden='true')
@@ -73,6 +73,7 @@
 import draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
+const KEYCODE_ENTER = 13;
 
 export default {
   components: {
@@ -102,11 +103,26 @@ export default {
         this.selectedIndex = null;
       }
     });
+    $(document).keyup((e) => {
+      if(e.which === KEYCODE_ENTER) {
+        if (this.editingIndex !== null) {
+          const i = this.editingIndex;
+          if (!this.routineValues[i] || !this.endEdit(this.editingIndex)) return;
+          if (i !== this.routineValues.length - 1) {
+            this.select(i + 1);
+          } else {
+            this.createRoutine(this.routineValues.length);
+          }
+        } else if (this.selectedIndex !== null) {
+          this.startEdit(this.selectedIndex);
+          return;
+        }
+      }
+    });
   },
   watch: {
     routines: {
       handler(val) {
-        console.log('parent routines changed: ',val);
         this.routineValues = val.values;
       },
       deep: true
@@ -116,18 +132,30 @@ export default {
     select(i) {
       this.selectedIndex = i;
     },
-    createRoutine() {
-      const i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
+    createRoutine(index) {
+      let i;
+      if (index === undefined) {
+        i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
+      } else {
+        i = index;
+      }
       this.routineValues.splice(i, 0, {title: ''});
-      this.startEdit(i);
+      this.$nextTick(() => {
+        this.startEdit(i);
+      });
     },
     startEdit(i) {
+      if (!this.routineValues[i]) return;
       this.editingIndex = i;
       this.$nextTick(() => {
         this.selectedIndex = i;
       });
       this.focusInput(i);
-      this.oldRoutine = JSON.parse(JSON.stringify(this.routineValues[i]));
+      try {
+        this.oldRoutine = JSON.parse(JSON.stringify(this.routineValues[i]));
+      } catch(e) {
+        this.oldRoutine = null;
+      }
     },
     focusInput(i) {
       this.$nextTick(() => {
@@ -136,14 +164,22 @@ export default {
     },
     endEdit(i) {
       this.editingIndex = null;
-      if (this.routineValues[i].title === '') {
+      if (!this.routineValues[i]) return;
+      if (this.routineValues[i].title === '' && this.oldRoutine) {
         // restore old value when title empty
         this.routineValues[i] = JSON.parse(JSON.stringify(this.oldRoutine));
+        try {
+          this.routineValues[i] = JSON.parse(JSON.stringify(this.routineValues[i]));
+        } catch(e) {
+          this.routineValues[i] = {title: ''};
+        }
       }
       if (this.routineValues[i].title === '') {
         this.deleteRoutine(i);
+        return false;
       } else {
         this.updateRoutines(this.routineValues);
+        return true;
       }
     },
     deleteRoutine(i) {
