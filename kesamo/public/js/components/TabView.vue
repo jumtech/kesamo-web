@@ -13,18 +13,15 @@
   display flex
   width 100%
   height 60px
-  padding 2px 0 2px 0
 .tab-item
+  box-sizing border-box
   flex-grow 1
   text-align center
   display flex
   justify-content center
   align-items center
   color #BFBFBF
-  border-bottom solid 2px #BFBFBF
-  &.selected
-    color #538D8F
-    border-bottom solid 5px #538D8F
+  border-bottom solid 3px #BFBFBF
   & .tab-link
     width 100%
     height 100%
@@ -36,10 +33,18 @@
     height 36px
     box-sizing border-box
     &.square
-      border solid 3px #538D8F
+      border solid 3px #BFBFBF
     &.border
-      background-image: linear-gradient(#FFFFFF 50%, #538D8F 50%, #538D8F);
+      background-image: linear-gradient(#FFFFFF 50%, #BFBFBF 50%, #BFBFBF);
       background-size: 21px 6px;
+  &.selected
+    color #538D8F
+    border-bottom solid 3px #538D8F
+    & .tab-image.square
+      border solid 3px #538D8F
+    & .tab-image.border
+      background-image: linear-gradient(#FFFFFF 50%, #538D8F 50%, #538D8F);
+
 
 </style>
 
