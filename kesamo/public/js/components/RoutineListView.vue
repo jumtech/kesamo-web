@@ -1,29 +1,30 @@
 <template lang='pug'>
 mixin list-items
-  li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
-    template(v-if='editingIndex === index')
-      p.title(@click='select(index)')
-        input(:id='"input" + index' v-model='routineValues[index].title' @blur='endEdit(index)')
-      .icon.delete(@click='deleteRoutine(index)')
+  li.list-item(v-for='(routine, i) in routineValues' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}')
+    template(v-if='editingIndex === i')
+      p.title
+        input(:id='"input" + i' v-model='routineValues[i].title' @blur='endEdit(i)')
+      .icon.delete(@click='deleteRoutine(i)')
         i(class='fa fa-trash' aria-hidden='true')
     template(v-else)
-      p.title(@click='select(index)'): | {{routine.title}}
-      .icon.edit(@click='startEdit(index)')
+      p.title(@touchstart='itemTouchStart(i)' @touchend='itemTouchEnd(i)'): | {{routine.title}}
+      .icon.edit(@click='startEdit(i)')
         i(class='fa fa-pencil' aria-hidden='true')
 
 .container
   .ksm_center-without-header(v-if='isRoutineLoading')
     loading
   template(v-else)
-    ul.list
-      draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
-        +list-items
-        .empty
-      template(v-else)
-        +list-items
-        .empty
-    .footer-button.create(@click='createRoutine()')
-      p: | ＋
+    .p2rfix
+      ul.list
+        draggable(v-if='this.draggingIndex !== null' v-model='routineValues' @end='endDrag')
+          +list-items
+          .empty
+        template(v-else)
+          +list-items
+          .empty
+      .footer-button.create(@click='createRoutine()')
+        p: | ＋
 </template>
 
 <style lang='stylus' scoped>
@@ -36,6 +37,9 @@ mixin list-items
     border solid 1px #BFBFBF
     &.selected
       background-color #EBF7DA
+    &.dragged
+      background-color #F3FFE1
+      box-shadow 2px 2px 20px #7F7F7F
     & .title
       padding 20px 10px 20px 20px
       flex-grow 1
@@ -84,6 +88,7 @@ import Routines from '../models/Routines';
 import Loading from './Loading.vue';
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESC = 27;
+let timer = null;
 
 export default {
   components: {
@@ -100,23 +105,28 @@ export default {
     return {
       selectedIndex: null,
       editingIndex: null,
+      draggingIndex: null,
       routineValues: [], // Routines classのvaluesのみ
       oldRoutine: null,
       isRoutineLoading: false,
     };
   },
   created() {
+    // disable "pull-to-refresh" action of android's chrome
+    if(window.navigator.userAgent.toLowerCase().indexOf('chrome')!=-1){var i,s,o;i=document;i.getElementsByTagName('html')[0].style.height='100%';s=i.getElementsByTagName('body')[0].style;s.height='100%';s.overflowY='hidden';o=i.getElementById('p2rfix').style;o.height='100%';o.overflow='auto';}
+
     if (this.routines) {
       this.routineValues = this.routines.getValues();
     } else {
       this.isRoutineLoading = true;
     }
-    // handlar for all click event
     $(document).click((e) => {
       if(!$(e.target).closest('.list-item').length) {
         this.unselect();
+        this.draggingIndex = null;
       }
     });
+
     $(document).keyup((e) => {
       switch (e.which) {
         case KEYCODE_ENTER:
@@ -217,11 +227,23 @@ export default {
     endDrag(e) {
       this.select(e.newIndex);
       this.updateRoutines(this.routineValues);
+      this.draggingIndex = null;
     },
     updateRoutines(arr) {
       this.$emit('routines-updated', arr);
       // fb.updateRoutines(routines);
-    }
+    },
+    itemTouchStart(i) {
+      if (i !== this.draggingIndex) this.draggingIndex = null;
+      this.select(i);
+      timer = setTimeout(() => {
+        this.draggingIndex = i;
+        this.unselect();
+      }, 500);
+    },
+    itemTouchEnd(i) {
+      clearTimeout(timer);
+    },
   }
 };
 </script>
