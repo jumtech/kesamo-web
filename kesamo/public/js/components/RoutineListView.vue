@@ -79,6 +79,7 @@ import draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
 const KEYCODE_ENTER = 13;
+const KEYCODE_ESC = 27;
 
 export default {
   components: {
@@ -105,25 +106,30 @@ export default {
     // handlar for all click event
     $(document).click((e) => {
       if(!$(e.target).closest('.list').length) {
-        this.selectedIndex = null;
+        this.unselect();
       }
     });
     $(document).keyup((e) => {
-      if(e.which === KEYCODE_ENTER) {
-        if (this.editingIndex !== null) {
-          const i = this.editingIndex;
-          if (!this.routineValues[i] || !this.endEdit(this.editingIndex)) return;
-          if (i !== this.routineValues.length - 1) {
-            this.select(i + 1);
-          } else {
-            this.createRoutine(this.routineValues.length);
-          }
-        } else if (this.selectedIndex !== null) {
-          this.startEdit(this.selectedIndex);
-          return;
-        }
+      switch (e.which) {
+        case KEYCODE_ENTER:
+          if (this.editingIndex !== null) {
+              const i = this.editingIndex;
+              if (!this.routineValues[i] || !this.endEdit(this.editingIndex)) return;
+              if (i !== this.routineValues.length - 1) {
+                this.select(i + 1);
+              } else {
+                this.createRoutine(this.routineValues.length);
+              }
+            } else if (this.selectedIndex !== null) {
+              this.startEdit(this.selectedIndex);
+              return;
+            }
+          break;
+        case KEYCODE_ESC:
+          this.unselect();
+          break;
       }
-    });
+   });
   },
   watch: {
     routines: {
@@ -136,6 +142,12 @@ export default {
   methods: {
     select(i) {
       this.selectedIndex = i;
+    },
+    unselect(i) {
+      this.selectedIndex = null;
+      if (this.editingIndex !== null) {
+        this.endEdit(this.editingIndex);
+      }
     },
     createRoutine(index) {
       let i;
@@ -189,7 +201,7 @@ export default {
     },
     deleteRoutine(i) {
       this.routineValues.splice(i, 1);
-      this.selectedIndex = null;
+      this.unselect();
       this.editingIndex = null;
       this.updateRoutines(this.routineValues);
     },
