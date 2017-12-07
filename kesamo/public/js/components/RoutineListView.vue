@@ -19,8 +19,6 @@ mixin list-item
       +list-item
   .footer-button.create(@click='createRoutine()')
     p: | ＋
-  .footer-button.logout(@click='logout')
-    p: i(class='fa fa-sign-out' aria-hidden='true')
 </template>
 
 <style lang='stylus' scoped>
@@ -47,11 +45,6 @@ mixin list-item
     padding 20px 20px 20px 10px
     &.delete
       color #B80228
-.logout
-  width 100%
-  font-size 1.6rem
-  text-align center
-  bottom 0
 .footer-button
   position absolute
   bottom 10px
@@ -63,8 +56,6 @@ mixin list-item
   color #EBF7DA
   box-shadow 5px 5px 20px #7F7F7F
   &.create
-    right 84px
-  &.logout
     right 12px
   & p
     position absolute
@@ -215,13 +206,6 @@ export default {
     updateRoutines(arr) {
       this.$emit('routines-updated', arr);
       // fb.updateRoutines(routines);
-    },
-    logout() {
-      fb.logout(() => {
-        location.href = '/';
-      }, (err) => {
-        console.error('logout error: ', err);
-      });
     }
   }
 };

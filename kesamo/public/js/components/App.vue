@@ -1,7 +1,7 @@
 <template lang="pug">
 .container
   tab-view
-  router-view(:routines='routines' @routines-updated='updateRoutines').content(v-if="user")
+  router-view(:routines='routines' :user='user' @routines-updated='updateRoutines').content(v-if="user")
   .login(v-else)
     button.login-button(@click="login")
       | Login with Google
@@ -44,9 +44,15 @@ export default {
   },
   created() {
     fb.addAuthStateChangedEventListener((user) => {
-      console.log('[authStateChanged] user: ',user);
+      console.log('user: ',user);
       if (user) {
-        this.user = user;
+        this.user = {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        };
+        console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
           console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
           this.routines = snapshot.val() ? new Routines(snapshot.val()) : new Routines([]);
