@@ -12,15 +12,18 @@ mixin list-items
         i(class='fa fa-pencil' aria-hidden='true')
 
 .container
-  ul.list
-    draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
-      +list-items
-      .empty
-    template(v-else)
-      +list-items
-      .empty
-  .footer-button.create(@click='createRoutine()')
-    p: | ＋
+  .ksm_center-without-header(v-if='isRoutineLoading')
+    loading
+  template(v-else)
+    ul.list
+      draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
+        +list-items
+        .empty
+      template(v-else)
+        +list-items
+        .empty
+    .footer-button.create(@click='createRoutine()')
+      p: | ＋
 </template>
 
 <style lang='stylus' scoped>
@@ -75,15 +78,17 @@ mixin list-items
 </style>
 
 <script>
-import draggable from 'vuedraggable';
+import Draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
+import Loading from './Loading.vue';
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESC = 27;
 
 export default {
   components: {
-    draggable
+    Loading,
+    Draggable,
   },
   props: {
     routines: { // 親から受け取ったRoutines class(子はread only)
@@ -97,15 +102,18 @@ export default {
       editingIndex: null,
       routineValues: [], // Routines classのvaluesのみ
       oldRoutine: null,
+      isRoutineLoading: false,
     };
   },
   created() {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
+    } else {
+      this.isRoutineLoading = true;
     }
     // handlar for all click event
     $(document).click((e) => {
-      if(!$(e.target).closest('.list').length) {
+      if(!$(e.target).closest('.list-item').length) {
         this.unselect();
       }
     });
@@ -135,6 +143,7 @@ export default {
     routines: {
       handler(val) {
         this.routineValues = val.values;
+        this.isRoutineLoading = false;
       },
       deep: true
     }

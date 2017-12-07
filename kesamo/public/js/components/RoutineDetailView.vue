@@ -1,31 +1,29 @@
 <template lang='pug'>
-.container
-  template(v-if='routineValues && routineValues.length > 0')
+.container.ksm_center-without-header
+  loading(v-if='isRoutineLoading')
+  template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0')
     p.title
       | {{routineValues[currentIndex].title}}
     .side-tap-area.left(v-if='currentIndex > 0' @click='go(-1)')
       .arrow-icon.left
     .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='go(1)')
       .arrow-icon.right
-    .accout-button(@click='toggleAccount')
-      i(class='fa fa-user-o' aria-hidden='true')
-    .balloon.account(v-if='showAccount')
-      .profile-container
-        img.photo(:src='user.photoURL')
-        .profile
-          .name
-            | {{user.displayName}}
-          .email
-            | {{user.email}}
-          button.logout(@click='logout')
-            | logout
+  .accout-button(@click='toggleAccount')
+    i(class='fa fa-user-o' aria-hidden='true')
+  .balloon.account(v-if='showAccount')
+    .profile-container
+      img.photo(:src='user.photoURL')
+      .profile
+        .name
+          | {{user.displayName}}
+        .email
+          | {{user.email}}
+        button.logout(@click='logout')
+          | logout
 </template>
 
 <style lang='stylus' scoped>
 .container
-  display flex
-  justify-content center
-  align-items center
   & .title
     font-size 2.4rem
   & .side-tap-area
@@ -106,13 +104,18 @@
 <script>
 import Routines from '../models/Routines';
 import fb from '../firebase-adapter';
+import Loading from './Loading.vue';
 
 export default {
+  components: {
+    Loading,
+  },
   data() {
     return {
       routineValues: null,
       currentIndex: 0,
       showAccount: false,
+      isRoutineLoading: false,
     };
   },
   props: {
@@ -128,12 +131,16 @@ export default {
   created() {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
+    } else {
+      console.log()
+      this.isRoutineLoading = true;
     }
   },
   watch: {
     routines: {
       handler(val) {
         this.routineValues = val.values;
+        this.isRoutineLoading = false;
       },
       deep: true
     }

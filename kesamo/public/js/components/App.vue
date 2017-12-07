@@ -1,25 +1,22 @@
 <template lang="pug">
 .container
   tab-view
-  router-view(:routines='routines' :user='user' @routines-updated='updateRoutines').content(v-if="user")
-  .login(v-else)
-    button.login-button(@click="login")
-      | Login with Google
+  .ksm_center-without-header(v-if='isUserLoading')
+    loading
+  template(v-else)
+    router-view.content(v-if="user" :routines='routines' :user='user' @routines-updated='updateRoutines')
+    .ksm_center-without-header(v-else)
+      button.login-button(@click="login")
+        | Login with Google
 </template>
 
 <style lang="stylus" scoped>
 .container
   width 100vw
   height 100vh
-.content
-  height calc(100vh - 60px)
-.login
-  width 100vw
-  height calc(100vh - 60px)
-  display flex
-  justify-content center
-  align-items center
-  &-button
+  & .content
+    height calc(100vh - 60px)
+  & .login-button
     padding 10px 10px 10px 10px
     font-size 1.2rem
     background-color #538D8F
@@ -31,18 +28,22 @@
 import TabView from './TabView.vue';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
+import Loading from './Loading.vue';
 
 export default {
   components: {
     TabView,
+    Loading,
   },
   data() {
     return {
       user: null,
       routines: null,
+      isUserLoading: false,
     }
   },
   created() {
+    if (!this.user) this.isUserLoading = true;
     fb.addAuthStateChangedEventListener((user) => {
       console.log('user: ',user);
       if (user) {
@@ -52,6 +53,7 @@ export default {
           email: user.email,
           photoURL: user.photoURL,
         };
+        this.isUserLoading = false;
         console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
           console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
