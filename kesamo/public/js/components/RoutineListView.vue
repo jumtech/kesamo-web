@@ -15,15 +15,16 @@ mixin list-items
   .ksm_center-without-header(v-if='isRoutineLoading')
     loading
   template(v-else)
-    ul.list
-      draggable(v-if='this.draggingIndex !== null' v-model='routineValues' @end='endDrag')
-        +list-items
-        .empty
-      template(v-else)
-        +list-items
-        .empty
-    .footer-button.create(@click='createRoutine()')
-      p: | ＋
+    .p2rfix
+      ul.list
+        draggable(v-if='this.draggingIndex !== null' v-model='routineValues' @end='endDrag')
+          +list-items
+          .empty
+        template(v-else)
+          +list-items
+          .empty
+      .footer-button.create(@click='createRoutine()')
+        p: | ＋
 </template>
 
 <style lang='stylus' scoped>
@@ -111,6 +112,9 @@ export default {
     };
   },
   created() {
+    // disable "pull-to-refresh" action of android's chrome
+    if(window.navigator.userAgent.toLowerCase().indexOf('chrome')!=-1){var i,s,o;i=document;i.getElementsByTagName('html')[0].style.height='100%';s=i.getElementsByTagName('body')[0].style;s.height='100%';s.overflowY='hidden';o=i.getElementById('p2rfix').style;o.height='100%';o.overflow='auto';}
+
     if (this.routines) {
       this.routineValues = this.routines.getValues();
     } else {
