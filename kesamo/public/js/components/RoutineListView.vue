@@ -1,17 +1,22 @@
 <template lang='pug'>
+mixin list-item
+  li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
+    template(v-if='editingIndex === index')
+      p.title(@click='select(index)')
+        input(:id='"input" + index' v-model='routineValues[index].title' @blur='endEdit(index)')
+      .icon.delete(@click='deleteRoutine(index)')
+        i(class='fa fa-trash' aria-hidden='true')
+    template(v-else)
+      p.title(@click='select(index)'): | {{routine.title}}
+      .icon.edit(@click='startEdit(index)')
+        i(class='fa fa-pencil' aria-hidden='true')
+
 .container
   ul.list
-    draggable(v-model='routineValues' @end='endDrag')
-      li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
-        template(v-if='editingIndex === index')
-          p.title(@click='select(index)')
-            input(:id='"input" + index' v-model='routineValues[index].title' @blur='endEdit(index)')
-          .icon.delete(@click='deleteRoutine(index)')
-            i(class='fa fa-trash' aria-hidden='true')
-        template(v-else)
-          p.title(@click='select(index)'): | {{routine.title}}
-          .icon.edit(@click='startEdit(index)')
-            i(class='fa fa-pencil' aria-hidden='true')
+    draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
+      +list-item
+    template(v-else)
+      +list-item
   .footer-button.create(@click='createRoutine()')
     p: | ＋
   .footer-button.logout(@click='logout')
