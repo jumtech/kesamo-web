@@ -1,63 +1,73 @@
 <template lang='pug'>
+mixin list-items
+  li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
+    template(v-if='editingIndex === index')
+      p.title(@click='select(index)')
+        input(:id='"input" + index' v-model='routineValues[index].title' @blur='endEdit(index)')
+      .icon.delete(@click='deleteRoutine(index)')
+        i(class='fa fa-trash' aria-hidden='true')
+    template(v-else)
+      p.title(@click='select(index)'): | {{routine.title}}
+      .icon.edit(@click='startEdit(index)')
+        i(class='fa fa-pencil' aria-hidden='true')
+
 .container
   ul.list
-    draggable(v-model='routineValues' @end='endDrag')
-      li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
-        template(v-if='editingIndex === index')
-          p.title(@click='select(index)')
-            input(v-model='routineValues[index].title' @blur='endEdit()')
-          .delete.icon(@click='deleteRoutine(index)')
-            i(class='fa fa-trash' aria-hidden='true')
-        template(v-else)
-          p.title(@click='select(index)'): | {{routine.title}}
-          .edit.icon(@click='startEdit(index)')
-            i(class='fa fa-pencil' aria-hidden='true')
-  .footer-button.create(@click='createRoutine')
+    draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
+      +list-items
+      .empty
+    template(v-else)
+      +list-items
+      .empty
+  .footer-button.create(@click='createRoutine()')
     p: | ＋
-  .footer-button.logout(@click='logout')
-    p: i(class='fa fa-sign-out' aria-hidden='true')
 </template>
 
 <style lang='stylus' scoped>
-.list-item
-  display flex
-  font-size 3.2rem
-  border solid 1px #BFBFBF
-  &.selected
-    background-color #EBF7DA
-  & .title
-    flex-grow 1
-    padding 50px 50px 50px 50px
-    & input
-      font-size 3.2rem
-  & .icon
-    width 50px
-    font-size 4.0rem
-    padding 50px 50px 50px 25px
-.logout
-  width 100%
-  font-size 2.4rem
-  text-align center
-  bottom 0
+.list
+  overflow scroll
+  height calc(100vh - 60px)
+  & .list-item
+    display flex
+    align-items center
+    border solid 1px #BFBFBF
+    &.selected
+      background-color #EBF7DA
+    & .title
+      padding 20px 10px 20px 20px
+      flex-grow 1
+      font-size 1.6rem
+      word-break break-all
+      & input
+        width 100%
+        font-size 1.6rem
+    & .icon
+      width 20px
+      font-size 1.6rem
+      padding 20px 20px 20px 10px
+      &.delete
+        color #B80228
+  & .empty
+    width 100%
+    height 100px
+
 .footer-button
   position absolute
-  bottom 30px
-  width 150px
-  height 150px
-  border-radius 75px
+  bottom 10px
+  width 60px
+  height 60px
+  border-radius 30px
   background-color #538D8F
-  font-size 6.0rem
+  font-size 2.4rem
   color #EBF7DA
   box-shadow 5px 5px 20px #7F7F7F
   &.create
-    right 210px
-  &.logout
-    right 30px
+    right 12px
   & p
     position absolute
     margin auto
-    width 100px
-    height 100px
+    width 40px
+    height 40px
     top 0
     right 0
     bottom 0
@@ -68,6 +78,8 @@
 import draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
+const KEYCODE_ENTER = 13;
+const KEYCODE_ESC = 27;
 
 export default {
   components: {
@@ -84,18 +96,44 @@ export default {
       selectedIndex: null,
       editingIndex: null,
       routineValues: [], // Routines classのvaluesのみ
+      oldRoutine: null,
     };
   },
   created() {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
     }
-    console.log('[routineListView created]this.routineValues: ',this.routineValues);
+    // handlar for all click event
+    $(document).click((e) => {
+      if(!$(e.target).closest('.list').length) {
+        this.unselect();
+      }
+    });
+    $(document).keyup((e) => {
+      switch (e.which) {
+        case KEYCODE_ENTER:
+          if (this.editingIndex !== null) {
+              const i = this.editingIndex;
+              if (!this.routineValues[i] || !this.endEdit(this.editingIndex)) return;
+              if (i !== this.routineValues.length - 1) {
+                this.select(i + 1);
+              } else {
+                this.createRoutine(this.routineValues.length);
+              }
+            } else if (this.selectedIndex !== null) {
+              this.startEdit(this.selectedIndex);
+              return;
+            }
+          break;
+        case KEYCODE_ESC:
+          this.unselect();
+          break;
+      }
+   });
   },
   watch: {
     routines: {
       handler(val) {
-        console.log('parent routines changed: ',val);
         this.routineValues = val.values;
       },
       deep: true
@@ -105,21 +143,65 @@ export default {
     select(i) {
       this.selectedIndex = i;
     },
-    createRoutine() {
-      const i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
+    unselect(i) {
+      this.selectedIndex = null;
+      if (this.editingIndex !== null) {
+        this.endEdit(this.editingIndex);
+      }
+    },
+    createRoutine(index) {
+      let i;
+      if (index === undefined) {
+        i = this.selectedIndex !== null ? this.selectedIndex + 1 : this.routineValues.length;
+      } else {
+        i = index;
+      }
       this.routineValues.splice(i, 0, {title: ''});
-      this.updateRoutines(this.routineValues);
+      this.$nextTick(() => {
+        this.startEdit(i);
+      });
     },
     startEdit(i) {
+      if (!this.routineValues[i]) return;
       this.editingIndex = i;
+      this.$nextTick(() => {
+        this.selectedIndex = i;
+      });
+      this.focusInput(i);
+      try {
+        this.oldRoutine = JSON.parse(JSON.stringify(this.routineValues[i]));
+      } catch(e) {
+        this.oldRoutine = null;
+      }
     },
-    endEdit() {
+    focusInput(i) {
+      this.$nextTick(() => {
+        $('#input' + i).focus();
+      });
+    },
+    endEdit(i) {
       this.editingIndex = null;
-      this.updateRoutines(this.routineValues);
+      if (!this.routineValues[i]) return;
+      if (this.routineValues[i].title === '' && this.oldRoutine) {
+        // restore old value when title empty
+        this.routineValues[i] = JSON.parse(JSON.stringify(this.oldRoutine));
+        try {
+          this.routineValues[i] = JSON.parse(JSON.stringify(this.routineValues[i]));
+        } catch(e) {
+          this.routineValues[i] = {title: ''};
+        }
+      }
+      if (this.routineValues[i].title === '') {
+        this.deleteRoutine(i);
+        return false;
+      } else {
+        this.updateRoutines(this.routineValues);
+        return true;
+      }
     },
-    deleteRoutine() {
-      this.routineValues.splice(this.editingIndex, 1);
-      this.selectedIndex = null;
+    deleteRoutine(i) {
+      this.routineValues.splice(i, 1);
+      this.unselect();
       this.editingIndex = null;
       this.updateRoutines(this.routineValues);
     },
@@ -130,13 +212,6 @@ export default {
     updateRoutines(arr) {
       this.$emit('routines-updated', arr);
       // fb.updateRoutines(routines);
-    },
-    logout() {
-      fb.logout(() => {
-        location.href = '/';
-      }, (err) => {
-        console.error('logout error: ', err);
-      });
     }
   }
 };

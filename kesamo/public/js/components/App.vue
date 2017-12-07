@@ -1,18 +1,30 @@
 <template lang="pug">
 .container
   tab-view
-  router-view(:routines='routines' @routines-updated='updateRoutines').content(v-if="user")
+  router-view(:routines='routines' :user='user' @routines-updated='updateRoutines').content(v-if="user")
   .login(v-else)
-    button(@click="login")
-      | Googleでログイン
+    button.login-button(@click="login")
+      | Login with Google
 </template>
 
 <style lang="stylus" scoped>
+.container
+  width 100vw
+  height 100vh
 .content
-  height calc(100vh - 150px)
+  height calc(100vh - 60px)
 .login
-  & button
-    font-size 5.4rem
+  width 100vw
+  height calc(100vh - 60px)
+  display flex
+  justify-content center
+  align-items center
+  &-button
+    padding 10px 10px 10px 10px
+    font-size 1.2rem
+    background-color #538D8F
+    border-radius 5px
+    color white
 </style>
 
 <script>
@@ -32,9 +44,15 @@ export default {
   },
   created() {
     fb.addAuthStateChangedEventListener((user) => {
-      console.log('[authStateChanged] user: ',user);
+      console.log('user: ',user);
       if (user) {
-        this.user = user;
+        this.user = {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        };
+        console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
           console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
           this.routines = snapshot.val() ? new Routines(snapshot.val()) : new Routines([]);
