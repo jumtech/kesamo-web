@@ -1,5 +1,5 @@
 <template lang='pug'>
-mixin list-item
+mixin list-items
   li.list-item(v-for='(routine, index) in routineValues' :class='{selected: selectedIndex === index}')
     template(v-if='editingIndex === index')
       p.title(@click='select(index)')
@@ -14,9 +14,11 @@ mixin list-item
 .container
   ul.list
     draggable(v-if='this.editingIndex === null' v-model='routineValues' @end='endDrag')
-      +list-item
+      +list-items
+      .empty
     template(v-else)
-      +list-item
+      +list-items
+      .empty
   .footer-button.create(@click='createRoutine()')
     p: | ＋
 </template>
@@ -25,26 +27,30 @@ mixin list-item
 .list
   overflow scroll
   height calc(100vh - 60px)
-.list-item
-  display flex
-  align-items center
-  border solid 1px #BFBFBF
-  &.selected
-    background-color #EBF7DA
-  & .title
-    padding 20px 10px 20px 20px
-    flex-grow 1
-    font-size 1.6rem
-    word-break break-all
-    & input
-      width 100%
+  & .list-item
+    display flex
+    align-items center
+    border solid 1px #BFBFBF
+    &.selected
+      background-color #EBF7DA
+    & .title
+      padding 20px 10px 20px 20px
+      flex-grow 1
       font-size 1.6rem
-  & .icon
-    width 20px
-    font-size 1.6rem
-    padding 20px 20px 20px 10px
-    &.delete
-      color #B80228
+      word-break break-all
+      & input
+        width 100%
+        font-size 1.6rem
+    & .icon
+      width 20px
+      font-size 1.6rem
+      padding 20px 20px 20px 10px
+      &.delete
+        color #B80228
+  & .empty
+    width 100%
+    height 100px
+
 .footer-button
   position absolute
   bottom 10px
