@@ -24,6 +24,9 @@ mixin list-item
 </template>
 
 <style lang='stylus' scoped>
+.list
+  overflow scroll
+  height calc(100vh - 60px)
 .list-item
   display flex
   align-items center
