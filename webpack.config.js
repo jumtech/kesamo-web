@@ -3,9 +3,12 @@ const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-  entry: './kesamo/public/js/index.js',
+  entry: {
+    bundle: './kesamo/public/js/index.js',
+    serviceWorker: './kesamo/public/serviceWorker.js'
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.join(__dirname, 'kesamo/public/dist')
   },
   module: {

@@ -1,0 +1,14 @@
+{
+  "name": "kesamo -hack your morning routines-",
+  "short_name": "kesamo",
+  "icons": [
+    {
+      "src": "/images/icon/icon_144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#538D8F"
+}
