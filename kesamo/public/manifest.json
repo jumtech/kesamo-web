@@ -3,9 +3,19 @@
   "short_name": "kesamo",
   "icons": [
     {
-      "src": "/images/icon/icon_144.png",
-      "sizes": "144x144",
-      "type": "image/png"
+      "src": "/images/icon/launcher-icon-1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/images/icon/launcher-icon-2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/images/icon/launcher-icon-4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
     }
   ],
   "start_url": "/",
