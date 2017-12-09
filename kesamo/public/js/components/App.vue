@@ -45,6 +45,7 @@ export default {
   created() {
     if (!this.user) this.isUserLoading = true;
     fb.addAuthStateChangedEventListener((user) => {
+      this.isUserLoading = false;
       console.log('user: ',user);
       if (user) {
         this.user = {
@@ -53,7 +54,6 @@ export default {
           email: user.email,
           photoURL: user.photoURL,
         };
-        this.isUserLoading = false;
         console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
           console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
