@@ -8,7 +8,8 @@ mixin list-items
         i(class='fa fa-trash' aria-hidden='true')
     template(v-else)
       p.title(@touchstart='itemTouchStart(i)' @touchend='itemTouchEnd(i)'): | {{routine.title}}
-      .icon.edit(@click='startEdit(i)')
+      //- .icon.edit(@click='startEdit(i)')
+      .icon.edit(@click='showEditModal')
         i(class='fa fa-pencil' aria-hidden='true')
 
 .container
@@ -25,6 +26,8 @@ mixin list-items
           .empty
       .footer-button.create(@click='createRoutine()')
         p: | ＋
+  modal(v-if='showModal' @modal-closed='saveEditResult')
+    h3(slot='header'): | custom header
 </template>
 
 <style lang='stylus' scoped>
@@ -86,6 +89,7 @@ import Draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
 import Loading from './Loading.vue';
+import Modal from './Modal.vue';
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESC = 27;
 let timer = null;
@@ -94,6 +98,7 @@ export default {
   components: {
     Loading,
     Draggable,
+    Modal,
   },
   props: {
     routines: { // 親から受け取ったRoutines class(子はread only)
@@ -109,6 +114,7 @@ export default {
       routineValues: [], // Routines classのvaluesのみ
       oldRoutine: null,
       isRoutineLoading: false,
+      showModal: false,
     };
   },
   created() {
@@ -249,6 +255,13 @@ export default {
     itemTouchEnd(i) {
       clearTimeout(timer);
     },
+    showEditModal() {
+      this.showModal = true;
+    },
+    saveEditResult(result) {
+      this.showModal = false;
+      console.log("@@@result: ",result);
+    }
   }
 };
 </script>
