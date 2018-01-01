@@ -11,13 +11,13 @@ transition(name='modal')
               label(for='title')
                 | title
             .input
-              input#title(v-model='result.title' maxlength='30')
+              input#title(v-model='values.title' maxlength='30')
           .form-group
             .label
               label(for='description')
                 | description
             .input
-              textarea#description(v-model='result.description')
+              textarea#description(v-model='values.description')
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -74,17 +74,21 @@ export default {
     heading: {
       type: String,
       required: true,
+    },
+    values: {
+      type: Object, // TODO: receive Array & generate form-elems
+      default: {
+        title: '',
+        description: '',
+      },
     }
   },
   data() {
-    return {
-      result: {title: 'title!', description: 'description!'},
-    };
+    return {};
   },
   methods: {
     emitCloseEvent(isOK) {
-      console.log("@@@emitCloseEvent");
-      this.$emit('modal-closed', isOK ? this.result : null);
+      this.$emit('modal-closed', isOK ? this.values : null);
     },
   },
 };
