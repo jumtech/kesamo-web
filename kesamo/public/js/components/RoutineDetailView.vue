@@ -2,8 +2,11 @@
 .container.ksm_center-without-header
   loading(v-if='isRoutineLoading')
   template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0')
-    p.title
-      | {{routineValues[currentIndex].title}}
+    .routine
+      p.title
+        | {{routineValues[currentIndex].title}}
+      p.description(v-if='routineValues[currentIndex].description')
+        | {{routineValues[currentIndex].description}}
     .side-tap-area.left(v-if='currentIndex > 0' @click='go(-1)')
       .arrow-icon.left
     .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='go(1)')
@@ -24,8 +27,14 @@
 
 <style lang='stylus' scoped>
 .container
-  & .title
-    font-size 2.4rem
+  & .routine
+      padding 0 120px 0 120px
+    & .title
+      text-align center
+      font-size 2.4rem
+    & .description
+      font-size 2.0rem
+      margin 30px 0 0 0
   & .side-tap-area
     width 120px
     height calc(100vh - 60px)

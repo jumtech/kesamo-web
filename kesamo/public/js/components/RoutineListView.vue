@@ -3,12 +3,13 @@ mixin list-items
   li.list-item(v-for='(routine, i) in routineValues' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}')
     template(v-if='editingIndex === i')
       p.title
-        input(:id='"input" + i' v-model='routineValues[i].title' @blur='endEdit(i)')
+        input(:id='"input" + i' v-model='routineValues[i].title' @blur='endEditIfNeeded(i)')
       .icon.delete(@click='deleteRoutine(i)')
         i(class='fa fa-trash' aria-hidden='true')
     template(v-else)
       p.title(@touchstart='itemTouchStart(i)' @touchend='itemTouchEnd(i)'): | {{routine.title}}
-      .icon.edit(@click='startEdit(i)')
+      //- .icon.edit(@click='startEdit(i)')
+      .icon.edit(@click='showEditModal(i)')
         i(class='fa fa-pencil' aria-hidden='true')
 
 .container
@@ -25,6 +26,7 @@ mixin list-items
           .empty
       .footer-button.create(@click='createRoutine()')
         p: | ＋
+  modal(heading='Edit Routine' :values='modalValues' v-if='showModal' @modal-closed='saveEditModalResult')
 </template>
 
 <style lang='stylus' scoped>
@@ -86,6 +88,7 @@ import Draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
 import Loading from './Loading.vue';
+import Modal from './Modal.vue';
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESC = 27;
 let timer = null;
@@ -94,6 +97,7 @@ export default {
   components: {
     Loading,
     Draggable,
+    Modal,
   },
   props: {
     routines: { // 親から受け取ったRoutines class(子はread only)
@@ -109,6 +113,8 @@ export default {
       routineValues: [], // Routines classのvaluesのみ
       oldRoutine: null,
       isRoutineLoading: false,
+      showModal: false,
+      modalValues: {title: 'parent-title', description: 'parent-description'},
     };
   },
   created() {
@@ -129,7 +135,7 @@ export default {
         case KEYCODE_ENTER:
           if (this.editingIndex !== null) {
               const i = this.editingIndex;
-              if (!this.routineValues[i] || !this.endEdit(this.editingIndex)) return;
+              if (!this.routineValues[i] || !this.endEditIfNeeded(this.editingIndex)) return;
               if (i !== this.routineValues.length - 1) {
                 this.select(i + 1);
               } else {
@@ -170,7 +176,7 @@ export default {
     unselect(i) {
       this.selectedIndex = null;
       if (this.editingIndex !== null) {
-        this.endEdit(this.editingIndex);
+        this.endEditIfNeeded(this.editingIndex);
       }
     },
     createRoutine(index) {
@@ -202,6 +208,10 @@ export default {
       this.$nextTick(() => {
         $('#input' + i).focus();
       });
+    },
+    endEditIfNeeded(i) {
+      if (this.showModal) return null;
+      return endEdit(i);
     },
     endEdit(i) {
       this.editingIndex = null;
@@ -249,6 +259,24 @@ export default {
     itemTouchEnd(i) {
       clearTimeout(timer);
     },
+    showEditModal(i) {
+      this.startEdit(i);
+      const title = this.routineValues[this.editingIndex].title;
+      const description = this.routineValues[this.editingIndex].description;
+      this.modalValues = {
+        title: title,
+        description: description ? description : '',
+      };
+      this.showModal = true;
+    },
+    saveEditModalResult(result) {
+      this.showModal = false;
+      if (result) {
+        this.routineValues[this.editingIndex].title = result.title;
+        this.routineValues[this.editingIndex].description = result.description;
+      }
+      this.endEdit(this.editingIndex);
+    }
   }
 };
 </script>
