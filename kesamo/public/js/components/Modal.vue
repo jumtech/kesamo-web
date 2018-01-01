@@ -7,12 +7,18 @@ transition(name='modal')
           slot(name='header')
             | default header
         .modal-body
-          slot(name='body')
-            | default body
+          label
+            p: | title
+            input(v-model='result.title')
+          label
+            p: | description
+            input(v-model='result.description')
         .modal-footer
-          slot(name='footer')
-            | default footer
-            button.modal-default-button(@click='emitCloseEvent')
+          .modal-cancel-button
+            button(@click='emitCloseEvent(false)')
+              | Cancel
+          .modal-ok-button
+            button(@click='emitCloseEvent(true)')
               | OK
 </template>
 
@@ -43,21 +49,21 @@ transition(name='modal')
   color #42b983
 .modal-body
   margin 20px 0
-.modal-default-button
-  float right
+.modal-footer
+  display flex
 </style>
 
 <script>
 export default {
   data() {
     return {
-      result: {title: 'title!', description: 'description!'}
+      result: {title: 'title!', description: 'description!'},
     };
   },
   methods: {
-    emitCloseEvent() {
+    emitCloseEvent(isOK) {
       console.log("@@@emitCloseEvent");
-      this.$emit('modal-closed', this.result);
+      this.$emit('modal-closed', isOK ? this.result : null);
     },
   },
 };
