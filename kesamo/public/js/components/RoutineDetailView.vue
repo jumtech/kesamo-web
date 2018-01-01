@@ -5,8 +5,9 @@
     .routine
       p.title
         | {{routineValues[currentIndex].title}}
-      p.description(v-if='routineValues[currentIndex].description')
-        | {{routineValues[currentIndex].description}}
+      .description(v-if='descriptions[currentIndex]')
+        p.description-line(v-for='line in descriptions[currentIndex]')
+          | {{line}}
     .side-tap-area.left(v-if='currentIndex > 0' @click='go(-1)')
       .arrow-icon.left
     .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='go(1)')
@@ -28,13 +29,17 @@
 <style lang='stylus' scoped>
 .container
   & .routine
-      padding 0 120px 0 120px
+      padding 0 50px 0 50px
     & .title
       text-align center
       font-size 2.4rem
     & .description
-      font-size 2.0rem
       margin 30px 0 0 0
+      &-line
+        margin .8rem 0 0 0
+        font-size 1.6rem
+        white-space pre-line
+        line-height 2.0rem
   & .side-tap-area
     width 120px
     height calc(100vh - 60px)
@@ -141,7 +146,6 @@ export default {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
     } else {
-      console.log()
       this.isRoutineLoading = true;
     }
   },
@@ -152,6 +156,14 @@ export default {
         this.isRoutineLoading = false;
       },
       deep: true
+    }
+  },
+  computed: {
+    // TODO: make 'RoutineDetail.vue' & delete this computed property
+    descriptions() {
+      return this.routineValues.map((routine) => {
+        return routine.description ? routine.description.split('\n') : [];
+      });
     }
   },
   methods: {
