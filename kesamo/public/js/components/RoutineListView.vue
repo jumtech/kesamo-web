@@ -26,8 +26,7 @@ mixin list-items
           .empty
       .footer-button.create(@click='createRoutine()')
         p: | ＋
-  modal(v-if='showModal' @modal-closed='saveEditResult')
-    h3(slot='header'): | custom header
+  modal(heading='Edit Routine' v-if='showModal' @modal-closed='saveEditResult')
 </template>
 
 <style lang='stylus' scoped>

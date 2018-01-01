@@ -4,15 +4,20 @@ transition(name='modal')
     .modal-wrapper
       .modal-container
         .modal-header
-          slot(name='header')
-            | default header
+          | {{heading}}
         .modal-body
-          label
-            p: | title
-            input(v-model='result.title')
-          label
-            p: | description
-            input(v-model='result.description')
+          .form-group
+            .label
+              label(for='title')
+                | title
+            .input
+              input#title(v-model='result.title' maxlength='30')
+          .form-group
+            .label
+              label(for='description')
+                | description
+            .input
+              textarea#description(v-model='result.description')
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -38,23 +43,39 @@ transition(name='modal')
   vertical-align middle
 .modal-container
   width 300px
-  mergin 0 auto 0 auto
+  margin 0 auto 0 auto
   padding 20px 30px 20px 30px
   background-color #fff
   border-radius 2px
   box-shadow 0 2px 8px rgba(0, 0, 0, .33)
   transition all .3s ease
-.modal-header h3
-  margin-top 0
-  color #42b983
+.modal-header
+  font-size 1.2rem
+  margin 0
+  color #538D8F
 .modal-body
-  margin 20px 0
+  margin 20px 0 20px 0
 .modal-footer
   display flex
+.form-group
+  margin 20px 0 20px 0
+  & .input
+    margin 10px 0 10px 0
+    & input, textarea
+      border 1px solid #BFBFBF
+      width 100%
+      border-radius 2px
+      padding 5px
 </style>
 
 <script>
 export default {
+  props: {
+    heading: {
+      type: String,
+      required: true,
+    }
+  },
   data() {
     return {
       result: {title: 'title!', description: 'description!'},
