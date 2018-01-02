@@ -27,6 +27,32 @@ transition(name='modal')
               | OK
 </template>
 
+<script>
+export default {
+  props: {
+    heading: {
+      type: String,
+      required: true,
+    },
+    values: {
+      type: Object, // TODO: receive Array & generate form-elems
+      default: {
+        title: '',
+        description: '',
+      },
+    }
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    emitCloseEvent(isOK) {
+      this.$emit('modal-closed', isOK ? this.values : null);
+    },
+  },
+};
+</script>
+
 <style lang='stylus' scoped>
 .modal-mask
   position fixed
@@ -67,29 +93,3 @@ transition(name='modal')
       border-radius 2px
       padding 5px
 </style>
-
-<script>
-export default {
-  props: {
-    heading: {
-      type: String,
-      required: true,
-    },
-    values: {
-      type: Object, // TODO: receive Array & generate form-elems
-      default: {
-        title: '',
-        description: '',
-      },
-    }
-  },
-  data() {
-    return {};
-  },
-  methods: {
-    emitCloseEvent(isOK) {
-      this.$emit('modal-closed', isOK ? this.values : null);
-    },
-  },
-};
-</script>

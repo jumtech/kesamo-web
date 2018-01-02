@@ -8,6 +8,24 @@
       .tab-image.border
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      selectedTab: null
+    };
+  },
+  created() {
+    this.select(this.$route.path.slice(1));
+  },
+  methods: {
+    select(tabName) {
+      this.selectedTab = tabName;
+    },
+  },
+};
+</script>
+
 <style lang='stylus' scoped>
 .container
   display flex
@@ -44,24 +62,4 @@
       border solid 3px #538D8F
     & .tab-image.border
       background-image: linear-gradient(#FFFFFF 50%, #538D8F 50%, #538D8F);
-
-
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      selectedTab: null
-    };
-  },
-  created() {
-    this.select(this.$route.path.slice(1));
-  },
-  methods: {
-    select(tabName) {
-      this.selectedTab = tabName;
-    },
-  },
-};
-</script>

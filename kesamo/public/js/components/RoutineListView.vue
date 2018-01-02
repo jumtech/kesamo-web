@@ -29,60 +29,6 @@ mixin list-items
   modal(heading='Edit Routine' :values='modalValues' v-if='showModal' @modal-closed='saveEditModalResult')
 </template>
 
-<style lang='stylus' scoped>
-.list
-  overflow scroll
-  height calc(100vh - 60px)
-  & .list-item
-    display flex
-    align-items center
-    border solid 1px #BFBFBF
-    &.selected
-      background-color #EBF7DA
-    &.dragged
-      background-color #F3FFE1
-      box-shadow 2px 2px 20px #7F7F7F
-    & .title
-      padding 20px 10px 20px 20px
-      flex-grow 1
-      font-size 1.6rem
-      word-break break-all
-      & input
-        width 100%
-        font-size 1.6rem
-    & .icon
-      width 20px
-      font-size 1.6rem
-      padding 20px 20px 20px 10px
-      &.delete
-        color #B80228
-  & .empty
-    width 100%
-    height 100px
-
-.footer-button
-  position absolute
-  bottom 10px
-  width 60px
-  height 60px
-  border-radius 30px
-  background-color #538D8F
-  font-size 2.4rem
-  color #EBF7DA
-  box-shadow 5px 5px 20px #7F7F7F
-  &.create
-    right 12px
-  & p
-    position absolute
-    margin auto
-    width 40px
-    height 40px
-    top 0
-    right 0
-    bottom 0
-    left 0
-</style>
-
 <script>
 import Draggable from 'vuedraggable';
 import fb from '../firebase-adapter';
@@ -289,3 +235,57 @@ export default {
   }
 };
 </script>
+
+<style lang='stylus' scoped>
+.list
+  overflow scroll
+  height calc(100vh - 60px)
+  & .list-item
+    display flex
+    align-items center
+    border solid 1px #BFBFBF
+    &.selected
+      background-color #EBF7DA
+    &.dragged
+      background-color #F3FFE1
+      box-shadow 2px 2px 20px #7F7F7F
+    & .title
+      padding 20px 10px 20px 20px
+      flex-grow 1
+      font-size 1.6rem
+      word-break break-all
+      & input
+        width 100%
+        font-size 1.6rem
+    & .icon
+      width 20px
+      font-size 1.6rem
+      padding 20px 20px 20px 10px
+      &.delete
+        color #B80228
+  & .empty
+    width 100%
+    height 100px
+
+.footer-button
+  position absolute
+  bottom 10px
+  width 60px
+  height 60px
+  border-radius 30px
+  background-color #538D8F
+  font-size 2.4rem
+  color #EBF7DA
+  box-shadow 5px 5px 20px #7F7F7F
+  &.create
+    right 12px
+  & p
+    position absolute
+    margin auto
+    width 40px
+    height 40px
+    top 0
+    right 0
+    bottom 0
+    left 0
+</style>

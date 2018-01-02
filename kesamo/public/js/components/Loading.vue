@@ -12,6 +12,14 @@
   .rect10
 </template>
 
+<script>
+export default {
+  data() {
+    return {}
+  },
+};
+</script>
+
 <style lang="stylus" scoped>
 .spinner
   margin 100px auto
@@ -52,15 +60,5 @@
   }  20% {
     transform scaleY(1.0)
   }
-
 }
-
 </style>
-
-<script>
-export default {
-  data() {
-    return {}
-  },
-};
-</script>
