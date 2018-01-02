@@ -4,13 +4,13 @@
   template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0')
     .routine
       p.title
-        | {{routineValues[currentIndex].title}}
-      .description(v-if='descriptions[currentIndex]')
-        p.description-line(v-for='line in descriptions[currentIndex]')
+        | {{routineValues[currentRoutineIndex].title}}
+      .description(v-if='descriptions[currentRoutineIndex]')
+        p.description-line(v-for='line in descriptions[currentRoutineIndex]')
           | {{line}}
-    .side-tap-area.left(v-if='currentIndex > 0' @click='go(-1)')
+    .side-tap-area.left(v-if='currentRoutineIndex > 0' @click='advanceRoutine(-1)')
       .arrow-icon.left
-    .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='go(1)')
+    .side-tap-area.right(v-if='currentRoutineIndex < routineValues.length - 1' @click='advanceRoutine(1)')
       .arrow-icon.right
   .accout-button(@click='toggleAccount')
     i(class='fa fa-user-o' aria-hidden='true')
@@ -127,7 +127,6 @@ export default {
   data() {
     return {
       routineValues: null,
-      currentIndex: 0,
       showAccount: false,
       isRoutineLoading: false,
     };
@@ -140,6 +139,10 @@ export default {
     user: {
       type: Object,
       default: null
+    },
+    currentRoutineIndex: {
+      type: Number,
+      default: 0
     },
   },
   created() {
@@ -167,8 +170,9 @@ export default {
     }
   },
   methods: {
-    go(n) {
-      this.currentIndex += n;
+    advanceRoutine(n) {
+      const i = this.currentRoutineIndex + n;
+      this.$emit('current-routine-index-updated', i);
     },
     toggleAccount() {
       this.showAccount = !this.showAccount;

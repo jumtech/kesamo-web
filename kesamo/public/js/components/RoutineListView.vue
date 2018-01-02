@@ -1,6 +1,6 @@
 <template lang='pug'>
 mixin list-items
-  li.list-item(v-for='(routine, i) in routineValues' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}')
+  li.list-item(v-for='(routine, i) in routineValues' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}' :id='i')
     template(v-if='editingIndex === i')
       p.title
         input(:id='"input" + i' v-model='routineValues[i].title' @blur='endEditIfNeeded(i)')
@@ -100,9 +100,13 @@ export default {
     Modal,
   },
   props: {
-    routines: { // 親から受け取ったRoutines class(子はread only)
+    routines: {
       type: Routines,
       default: null,
+    },
+    currentRoutineIndex: {
+      type: Number,
+      default: 0
     },
   },
   data() {
@@ -110,7 +114,7 @@ export default {
       selectedIndex: null,
       editingIndex: null,
       draggingIndex: null,
-      routineValues: [], // Routines classのvaluesのみ
+      routineValues: [], // only values of Routines class
       oldRoutine: null,
       isRoutineLoading: false,
       showModal: false,
@@ -120,6 +124,7 @@ export default {
   created() {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
+      this.$nextTick(() => this.selectAndScrollTo(this.currentRoutineIndex));
     } else {
       this.isRoutineLoading = true;
     }
@@ -178,6 +183,10 @@ export default {
       if (this.editingIndex !== null) {
         this.endEditIfNeeded(this.editingIndex);
       }
+    },
+    selectAndScrollTo(i) {
+      this.select(i);
+      window.location.hash = `#${i}`
     },
     createRoutine(index) {
       let i;
