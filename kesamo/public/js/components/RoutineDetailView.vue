@@ -26,6 +26,80 @@
           | logout
 </template>
 
+<script>
+import Routines from '../models/Routines';
+import fb from '../firebase-adapter';
+import Loading from './Loading.vue';
+
+export default {
+  components: {
+    Loading,
+  },
+  data() {
+    return {
+      routineValues: null,
+      showAccount: false,
+      isRoutineLoading: false,
+    };
+  },
+  props: {
+    routines: {
+      type: Routines,
+      default: null
+    },
+    user: {
+      type: Object,
+      default: null
+    },
+    currentRoutineIndex: {
+      type: Number,
+      default: 0
+    },
+  },
+  created() {
+    if (this.routines) {
+      this.routineValues = this.routines.getValues();
+    } else {
+      this.isRoutineLoading = true;
+    }
+  },
+  watch: {
+    routines: {
+      handler(val) {
+        this.routineValues = val.values;
+        this.isRoutineLoading = false;
+      },
+      deep: true
+    }
+  },
+  computed: {
+    // TODO: make 'RoutineDetail.vue' & delete this computed property
+    descriptions() {
+      return this.routineValues.map((routine) => {
+        return routine.description ? routine.description.split('\n') : [];
+      });
+    }
+  },
+  methods: {
+    advanceRoutine(n) {
+      const i = this.currentRoutineIndex + n;
+      this.$emit('current-routine-index-updated', i);
+    },
+    toggleAccount() {
+      this.showAccount = !this.showAccount;
+    },
+    logout() {
+      fb.logout(() => {
+        location.href = '/';
+      }, (err) => {
+        console.error('logout error: ', err);
+      });
+    }
+  }
+};
+</script>
+
+
 <style lang='stylus' scoped>
 .container
   & .routine
@@ -114,76 +188,3 @@
           &:active
             color #980220
 </style>
-
-<script>
-import Routines from '../models/Routines';
-import fb from '../firebase-adapter';
-import Loading from './Loading.vue';
-
-export default {
-  components: {
-    Loading,
-  },
-  data() {
-    return {
-      routineValues: null,
-      showAccount: false,
-      isRoutineLoading: false,
-    };
-  },
-  props: {
-    routines: {
-      type: Routines,
-      default: null
-    },
-    user: {
-      type: Object,
-      default: null
-    },
-    currentRoutineIndex: {
-      type: Number,
-      default: 0
-    },
-  },
-  created() {
-    if (this.routines) {
-      this.routineValues = this.routines.getValues();
-    } else {
-      this.isRoutineLoading = true;
-    }
-  },
-  watch: {
-    routines: {
-      handler(val) {
-        this.routineValues = val.values;
-        this.isRoutineLoading = false;
-      },
-      deep: true
-    }
-  },
-  computed: {
-    // TODO: make 'RoutineDetail.vue' & delete this computed property
-    descriptions() {
-      return this.routineValues.map((routine) => {
-        return routine.description ? routine.description.split('\n') : [];
-      });
-    }
-  },
-  methods: {
-    advanceRoutine(n) {
-      const i = this.currentRoutineIndex + n;
-      this.$emit('current-routine-index-updated', i);
-    },
-    toggleAccount() {
-      this.showAccount = !this.showAccount;
-    },
-    logout() {
-      fb.logout(() => {
-        location.href = '/';
-      }, (err) => {
-        console.error('logout error: ', err);
-      });
-    }
-  }
-};
-</script>
