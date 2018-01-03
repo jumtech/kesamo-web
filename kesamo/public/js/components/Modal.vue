@@ -54,6 +54,9 @@ export default {
 </script>
 
 <style lang='stylus' scoped>
+$modal-width = 80vw
+$modal-padding = 30px
+$modal-item-top-margin = 20px
 .modal-mask
   position fixed
   z-index 9998
@@ -68,28 +71,40 @@ export default {
   display table-cell
   vertical-align middle
 .modal-container
-  width 300px
+  width $modal-width
   margin 0 auto 0 auto
-  padding 20px 30px 20px 30px
+  padding $modal-padding
   background-color #fff
   border-radius 2px
   box-shadow 0 2px 8px rgba(0, 0, 0, .33)
   transition all .3s ease
 .modal-header
-  font-size 1.2rem
+  font-size 1.8rem
   margin 0
   color #538D8F
 .modal-body
-  margin 20px 0 20px 0
+  margin $modal-item-top-margin 0
 .modal-footer
   display flex
+  & button
+    font-size 1.6rem
 .form-group
-  margin 20px 0 20px 0
+  margin $modal-item-top-margin 0
+  font-size 1.6rem
   & .input
     margin 10px 0 10px 0
     & input, textarea
-      border 1px solid #BFBFBF
+      box-sizing border-box
       width 100%
-      border-radius 2px
       padding 5px
+      border 1px solid #BFBFBF
+      border-radius 2px
+      font-size 1.6rem
+    & input
+      height 40px
+    & textarea
+      height 100px
+      max-height 200px
+      font-size 1.2rem
+      resize vertical
 </style>
