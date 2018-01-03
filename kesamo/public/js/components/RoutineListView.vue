@@ -5,12 +5,14 @@ mixin list-items
       p.title
         input(:id='"input" + i' v-model='routineValues[i].title' @blur='endEditIfNeeded(i)')
       .icon.delete(@click='deleteRoutine(i)')
-        i(class='fa fa-trash' aria-hidden='true')
+        i.fa.fa-trash(aria-hidden='true')
     template(v-else)
-      p.title(@touchstart='itemTouchStart(i)' @touchend='itemTouchEnd(i)'): | {{routine.title}}
-      //- .icon.edit(@click='startEdit(i)')
-      .icon.edit(@click='showEditModal(i)')
-        i(class='fa fa-pencil' aria-hidden='true')
+      .icon.drag(@click='enableDrag(i)')
+        i.fa.fa-bars(aria-hidden='true')
+      .list-item-content
+        p.title(@click='startEdit(i)'): | {{routine.title}}
+        .icon.edit(@click='showEditModal(i)')
+          i.fa.fa-pencil(aria-hidden='true')
 
 .container
   .ksm_center-without-header(v-if='isRoutineLoading')
@@ -146,7 +148,8 @@ export default {
         this.startEdit(i);
       });
     },
-    startEdit(i) {
+    startEdit(i, event) {
+      this.draggingIndex = null;
       if (!this.routineValues[i]) return;
       this.editingIndex = i;
       this.$nextTick(() => {
@@ -166,7 +169,7 @@ export default {
     },
     endEditIfNeeded(i) {
       if (this.showModal) return null;
-      return endEdit(i);
+      return this.endEdit(i);
     },
     endEdit(i) {
       this.editingIndex = null;
@@ -203,16 +206,10 @@ export default {
       this.$emit('routines-updated', arr);
       // fb.updateRoutines(routines);
     },
-    itemTouchStart(i) {
+    enableDrag(i) {
       if (i !== this.draggingIndex) this.draggingIndex = null;
       this.select(i);
-      timer = setTimeout(() => {
-        this.draggingIndex = i;
-        this.unselect();
-      }, 500);
-    },
-    itemTouchEnd(i) {
-      clearTimeout(timer);
+      this.draggingIndex = i;
     },
     showEditModal(i) {
       this.startEdit(i);
@@ -244,11 +241,11 @@ export default {
     display flex
     align-items center
     border solid 1px #BFBFBF
-    &.selected
-      background-color #EBF7DA
-    &.dragged
-      background-color #F3FFE1
-      box-shadow 2px 2px 20px #7F7F7F
+    background-color #FFFFFF
+    &-content
+      display flex
+      align-items center
+      width calc(100vw - 60px)
     & .title
       padding 20px 10px 20px 20px
       flex-grow 1
@@ -260,9 +257,22 @@ export default {
     & .icon
       width 20px
       font-size 1.6rem
-      padding 20px 20px 20px 10px
+      padding 20px 20px 20px 20px
       &.delete
         color #B80228
+    &.selected
+      background-color #EBF7DA
+      & .list-item-content
+        background-color #EBF7DA
+      &.dragged
+        background-color #538D8F
+        box-shadow 2px 2px 20px #7F7F7F
+        position relative
+        & .list-item-content
+          background-color #EBF7DA
+        & .icon.drag
+          background-color #538D8F
+          color #EBF7DA
   & .empty
     width 100%
     height 100px
