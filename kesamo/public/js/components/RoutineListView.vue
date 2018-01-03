@@ -234,6 +234,8 @@ export default {
 </script>
 
 <style lang='stylus' scoped>
+$icon-raw-width = 20px
+$icon-side-padding = 20px
 .list
   overflow scroll
   height calc(100vh - 60px)
@@ -245,7 +247,7 @@ export default {
     &-content
       display flex
       align-items center
-      width calc(100vw - 60px)
+      width "calc(100vw - (%s + %s * 2))" % ($icon-raw-width $icon-side-padding)
     & .title
       padding 20px 10px 20px 20px
       flex-grow 1
@@ -255,9 +257,9 @@ export default {
         width 100%
         font-size 1.6rem
     & .icon
-      width 20px
+      width "calc(%s + %s * 2)" % ($icon-raw-width $icon-side-padding)
       font-size 1.6rem
-      padding 20px 20px 20px 20px
+      padding 20px $icon-side-padding
       &.delete
         color #B80228
     &.selected
