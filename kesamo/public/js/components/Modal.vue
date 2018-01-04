@@ -1,8 +1,8 @@
 <template lang='pug'>
 transition(name='modal')
-  .modal-mask
-    .modal-wrapper
-      .modal-container
+  .modal-mask(@click='emitCloseEvent(false)')
+    .modal-wrapper(name)
+      .modal-container(@click.stop='')
         .modal-header
           | {{heading}}
         .modal-body
