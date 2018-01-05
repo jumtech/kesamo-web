@@ -177,6 +177,7 @@ export default {
           margin 8px 0 0 8px
           font-size 0.9rem
           color #7F7F7F
+          word-break break-all
         & .logout
           width 100%
           font-size 0.9rem
