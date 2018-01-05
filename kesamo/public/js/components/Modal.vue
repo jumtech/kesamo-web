@@ -86,8 +86,18 @@ $modal-item-top-margin = 20px
   margin $modal-item-top-margin 0
 .modal-footer
   display flex
+  justify-content space-around
   & button
-    font-size 1.6rem
+    padding 2px 10px
+    border 1px solid
+    border-radius 5px
+    font-size 1.2rem
+  & .modal-cancel-button > button
+    background-color #EBF7DA
+    color #538D8F
+  & .modal-ok-button > button
+    background-color #538D8F
+    color #EBF7DA
 .form-group
   margin $modal-item-top-margin 0
   font-size 1.6rem
