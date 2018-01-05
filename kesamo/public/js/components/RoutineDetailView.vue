@@ -22,8 +22,9 @@
           | {{user.displayName}}
         .email
           | {{user.email}}
-        button.logout(@click='logout')
-          | logout
+        .logout
+          button(@click='logout')
+            | logout
 </template>
 
 <script>
@@ -180,12 +181,15 @@ export default {
           word-break break-all
         & .logout
           width 100%
-          font-size 0.9rem
-          color #B80228
-          text-decoration underline
           text-align right
-          &:hover
-            color #FF0337
-          &:active
-            color #980220
+          & button
+            font-size 0.9rem
+            text-decoration underline
+            color #B80228
+            background-color inherit
+            border none
+            &:hover
+              color #FF0337
+            &:active
+              color #980220
 </style>
