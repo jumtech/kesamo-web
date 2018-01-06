@@ -1,16 +1,16 @@
 <template lang='pug'>
 .container.ksm_center-without-header
   loading(v-if='isRoutineLoading')
-  template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0 && routineValues[currentIndex]')
+  template(v-if='!isRoutineLoading && routines_ && routines_.length > 0 && routines_[currentIndex_]')
     .routine
       p.title
-        | {{routineValues[currentIndex].title}}
-      .description(v-if='descriptions[currentIndex]')
-        p.description-line(v-for='line in descriptions[currentIndex]')
+        | {{routines_[currentIndex_].title}}
+      .description(v-if='descriptions[currentIndex_]')
+        p.description-line(v-for='line in descriptions[currentIndex_]')
           | {{line}}
-    .side-tap-area.left(v-if='currentIndex > 0' @click='advanceRoutine(-1)')
+    .side-tap-area.left(v-if='currentIndex_ > 0' @click='advanceRoutine(-1)')
       .arrow-icon.left
-    .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='advanceRoutine(1)')
+    .side-tap-area.right(v-if='currentIndex_ < routines_.length - 1' @click='advanceRoutine(1)')
       .arrow-icon.right
   .accout-button(@click='toggleAccount')
     i(class='fa fa-user-o' aria-hidden='true')
@@ -38,8 +38,8 @@ export default {
   },
   data() {
     return {
-      routineValues: null,
-      currentIndex: 0,
+      routines_: null,
+      currentIndex_: 0,
       showAccount: false,
       isRoutineLoading: false,
     };
@@ -63,7 +63,7 @@ export default {
     },
   },
   created() {
-    this.currentIndex = this.currentFilterdRoutineIndex || 0;
+    this.currentIndex_ = this.currentFilterdRoutineIndex || 0;
     if (this.routines) {
       let rawValues = this.routines.getValues();
       rawValues = rawValues.map((r) => {
@@ -75,7 +75,7 @@ export default {
         return r;
       });
       values = values.filter((r) => r.isTodaysRoutine);
-      this.routineValues = values;
+      this.routines_ = values;
       let index = 0;
       for (let i = this.currentRoutineIndex; i > -1; i--) {
         if (rawValues[i].isTodaysRoutine) {
@@ -85,7 +85,7 @@ export default {
           break;
         }
       }
-      this.currentIndex = index;
+      this.currentIndex_ = index;
     } else {
       this.isRoutineLoading = true;
     }
@@ -93,7 +93,7 @@ export default {
   watch: {
     routines: {
       handler(val) {
-        this.routineValues = val.values.filter(this.isTodaysRoutine);
+        this.routines_ = val.values.filter(this.isTodaysRoutine);
         this.isRoutineLoading = false;
       },
       deep: true
@@ -102,20 +102,20 @@ export default {
   computed: {
     // TODO: make 'RoutineDetail.vue' & delete this computed property
     descriptions() {
-      return this.routineValues.map((routine) => {
+      return this.routines_.map((routine) => {
         return routine.description ? routine.description.split('\n') : [];
       });
     }
   },
   methods: {
     advanceRoutine(n) {
-      const i = this.currentIndex + n;
+      const i = this.currentIndex_ + n;
       let result = {
         filterdIndex: i,
-        index: this.routineValues[i].index
+        index: this.routines_[i].index
       };
       this.$emit('current-routine-index-updated', result);
-      this.currentIndex = i;
+      this.currentIndex_ = i;
     },
     toggleAccount() {
       this.showAccount = !this.showAccount;

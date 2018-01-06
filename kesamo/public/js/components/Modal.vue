@@ -11,20 +11,20 @@ transition(name='modal')
               label(for='title')
                 | title
             .input
-              input#title(v-model='title' maxlength='30')
+              input#title(v-model='title_' maxlength='30')
           .form-group
             .label
               label(for='description')
                 | description
             .input
-              textarea#description(v-model='description')
+              textarea#description(v-model='description_')
           .form-group.has-option
             .checkbox
               input(type='checkbox' v-model='showDaysOfTheWeek')
               label: | for only some days of the week
           .form-group.option(v-if='showDaysOfTheWeek')
             .checkbox(v-for='DAY in DAYS')
-              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek')
+              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
               label: | {{DAY.NAME}}
         .modal-footer
           .modal-cancel-button
@@ -55,18 +55,18 @@ export default {
   },
   data() {
     return {
-      title: '',
-      description: '',
+      title_: '',
+      description_: '',
+      daysOfTheWeek_: [],
       showDaysOfTheWeek: false,
-      daysOfTheWeek: []
     };
   },
   created() {
-    this.title = this.values.title;
-    this.description = this.values.description;
+    this.title_ = this.values.title;
+    this.description_ = this.values.description;
     if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
       this.showDaysOfTheWeek = true;
-      this.daysOfTheWeek = this.values.daysOfTheWeek.map((v) => v.toString());
+      this.daysOfTheWeek_ = this.values.daysOfTheWeek.map((v) => v.toString());
     }
   },
   computed: {
@@ -77,12 +77,12 @@ export default {
   methods: {
     emitCloseEvent(isOK) {
       const days =
-        this.daysOfTheWeek
+        this.daysOfTheWeek_
           .map((v) => Number(v))
           .sort((a, b) => {return a < b ? -1 : 1});
       const result = {
-        title: this.title,
-        description: this.description,
+        title: this.title_,
+        description: this.description_,
         daysOfTheWeek: days
       }
       this.$emit('modal-closed', isOK ? result : null);
