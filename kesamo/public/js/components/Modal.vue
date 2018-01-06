@@ -23,27 +23,9 @@ transition(name='modal')
               input(type='checkbox' v-model='showDaysOfTheWeek')
               label: | for only some day of the week
           .form-group.option(v-if='showDaysOfTheWeek')
-            .checkbox
-              input(type='checkbox' value='0' v-model='daysOfTheWeek')
-              label: | Monday
-            .checkbox
-              input(type='checkbox'  value='1' v-model='daysOfTheWeek')
-              label: | Tuesday
-            .checkbox
-              input(type='checkbox' value='2' v-model='daysOfTheWeek')
-              label: | Wednesday
-            .checkbox
-              input(type='checkbox' value='3' v-model='daysOfTheWeek')
-              label: | Thursday
-            .checkbox
-              input(type='checkbox' value='4'  v-model='daysOfTheWeek')
-              label: | Friday
-            .checkbox
-              input(type='checkbox' value='5'  v-model='daysOfTheWeek')
-              label: | Saturday
-            .checkbox
-              input(type='checkbox' value='6'  v-model='daysOfTheWeek')
-              label: | Sunday
+            .checkbox(v-for='DAY in DAYS')
+              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek')
+              label: | {{DAY.NAME}}
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -54,6 +36,8 @@ transition(name='modal')
 </template>
 
 <script>
+import DAY_OF_THE_WEEK from '../defs/day-of-the-week';
+
 export default {
   props: {
     heading: {
@@ -78,7 +62,12 @@ export default {
   created() {
     if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
       this.showDaysOfTheWeek = true;
-      this.daysOfTheWeek = this.values.daysOfTheWeek.map((v) => v);
+      this.daysOfTheWeek = this.values.daysOfTheWeek.map((v) => v.toString());
+    }
+  },
+  computed: {
+    DAYS() {
+      return DAY_OF_THE_WEEK;
     }
   },
   methods: {
