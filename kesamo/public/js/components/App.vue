@@ -4,7 +4,14 @@
   .ksm_center-without-header(v-if='isUserLoading')
     loading
   template(v-else)
-    router-view.content(v-if="user" :routines='routines' :user='user' :currentRoutineIndex='currentRoutineIndex' @routines-updated='updateRoutines' @current-routine-index-updated='updateCurrentRoutineIndex')
+    router-view.content(v-if="user"
+      :routines='routines'
+      :user='user'
+      :currentRoutineIndex='currentRoutineIndex'
+      :currentRoutineRawIndex='currentRoutineRawIndex'
+      @routines-updated='updateRoutines'
+      @current-routine-index-updated='updateCurrentRoutineIndex'
+    )
     .ksm_center-without-header(v-else)
       button.login-button(@click="login")
         | Login with Google
@@ -41,6 +48,7 @@ export default {
       routines: null,
       isUserLoading: false,
       currentRoutineIndex: 0,
+      currentRoutineRawIndex: 0
     }
   },
   created() {
@@ -76,8 +84,9 @@ export default {
     updateRoutines(values) {
       this.routines.saveValues(values);
     },
-    updateCurrentRoutineIndex(i) {
-      this.currentRoutineIndex = i;
+    updateCurrentRoutineIndex(result) {
+      this.currentRoutineIndex = result.index;
+      this.currentRoutineRawIndex = result.rawIndex;
     },
   }
 };

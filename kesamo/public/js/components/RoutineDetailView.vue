@@ -1,16 +1,16 @@
 <template lang='pug'>
 .container.ksm_center-without-header
   loading(v-if='isRoutineLoading')
-  template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0')
+  template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0 && routineValues[currentIndex]')
     .routine
       p.title
-        | {{routineValues[currentRoutineIndex].title}}
-      .description(v-if='descriptions[currentRoutineIndex]')
-        p.description-line(v-for='line in descriptions[currentRoutineIndex]')
+        | {{routineValues[currentIndex].title}}
+      .description(v-if='descriptions[currentIndex]')
+        p.description-line(v-for='line in descriptions[currentIndex]')
           | {{line}}
-    .side-tap-area.left(v-if='currentRoutineIndex > 0' @click='advanceRoutine(-1)')
+    .side-tap-area.left(v-if='currentIndex > 0' @click='advanceRoutine(-1)')
       .arrow-icon.left
-    .side-tap-area.right(v-if='currentRoutineIndex < routineValues.length - 1' @click='advanceRoutine(1)')
+    .side-tap-area.right(v-if='currentIndex < routineValues.length - 1' @click='advanceRoutine(1)')
       .arrow-icon.right
   .accout-button(@click='toggleAccount')
     i(class='fa fa-user-o' aria-hidden='true')
@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       routineValues: null,
+      currentIndex: 0,
       showAccount: false,
       isRoutineLoading: false,
     };
@@ -56,10 +57,35 @@ export default {
       type: Number,
       default: 0
     },
+    currentRoutineRawIndex: {
+      type: Number,
+      default: 0
+    },
   },
   created() {
+    this.currentIndex = this.currentRoutineIndex || 0;
     if (this.routines) {
-      this.routineValues = this.filterTodaysDayOfTheWeek(this.routines.getValues());
+      let rawValues = this.routines.getValues();
+      rawValues = rawValues.map((r) => {
+        r.isTodaysRoutine = this.isTodaysRoutine(r);
+        return r;
+      });
+      let values = rawValues.map((r, i) => {
+        r.rawIndex = i;
+        return r;
+      });
+      values = values.filter((r) => r.isTodaysRoutine);
+      this.routineValues = values;
+      let index = 0;
+      for (let i = this.currentRoutineRawIndex; i > -1; i--) {
+        if (rawValues[i].isTodaysRoutine) {
+          index = values.findIndex((r) => {
+            return r.rawIndex === i;
+          });
+          break;
+        }
+      }
+      this.currentIndex = index;
     } else {
       this.isRoutineLoading = true;
     }
@@ -67,7 +93,7 @@ export default {
   watch: {
     routines: {
       handler(val) {
-        this.routineValues = this.filterTodaysDayOfTheWeek(val.values);
+        this.routineValues = val.values.filter(this.isTodaysRoutine);
         this.isRoutineLoading = false;
       },
       deep: true
@@ -83,8 +109,13 @@ export default {
   },
   methods: {
     advanceRoutine(n) {
-      const i = this.currentRoutineIndex + n;
-        this.$emit('current-routine-index-updated', i);
+      const i = this.currentIndex + n;
+      let result = {
+        index: i,
+        rawIndex: this.routineValues[i].rawIndex
+      };
+      this.$emit('current-routine-index-updated', result);
+      this.currentIndex = i;
     },
     toggleAccount() {
       this.showAccount = !this.showAccount;
@@ -96,13 +127,10 @@ export default {
         console.error('logout error: ', err);
       });
     },
-    filterTodaysDayOfTheWeek(routines) {
-      if (!routines) return [];
-      return routines.filter((r) => {
-        if (!Array.isArray(r.daysOfTheWeek)) return true;
-        const todaysDay = (new Date()).getDay();
-        return r.daysOfTheWeek.includes(todaysDay);
-      });
+    isTodaysRoutine(routine) {
+      if (!routine.daysOfTheWeek || !Array.isArray(routine.daysOfTheWeek)) return true;
+      const todaysDay = (new Date()).getDay();
+      return routine.daysOfTheWeek.includes(todaysDay);
     },
   }
 };
