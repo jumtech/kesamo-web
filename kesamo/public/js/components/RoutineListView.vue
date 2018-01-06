@@ -14,13 +14,7 @@ mixin list-items
         .list-item-content-main(@click='startEdit(i)')
           p.title: | {{routine.title}}
           .week-rects(v-if='routine.isForOnlySomeDays')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(1)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(2)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(3)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(4)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(5)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(6)}')
-            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(0)}')
+            .rect(v-for="n in [1,2,3,4,5,6,0]" :class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(n)}')
         .icon.edit(@click='showEditModal(i)')
           i.fa.fa-pencil(aria-hidden='true')
 
