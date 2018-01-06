@@ -11,13 +11,13 @@ transition(name='modal')
               label(for='title')
                 | title
             .input
-              input#title(v-model='values.title' maxlength='30')
+              input#title(v-model='title' maxlength='30')
           .form-group
             .label
               label(for='description')
                 | description
             .input
-              textarea#description(v-model='values.description')
+              textarea#description(v-model='description')
           .form-group.has-option
             .checkbox
               input(type='checkbox' v-model='showDaysOfTheWeek')
@@ -55,11 +55,15 @@ export default {
   },
   data() {
     return {
+      title: '',
+      description: '',
       showDaysOfTheWeek: false,
       daysOfTheWeek: []
     };
   },
   created() {
+    this.title = this.values.title;
+    this.description = this.values.description;
     if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
       this.showDaysOfTheWeek = true;
       this.daysOfTheWeek = this.values.daysOfTheWeek.map((v) => v.toString());
@@ -72,11 +76,16 @@ export default {
   },
   methods: {
     emitCloseEvent(isOK) {
-      this.values.daysOfTheWeek =
+      const days =
         this.daysOfTheWeek
           .map((v) => Number(v))
           .sort((a, b) => {return a < b ? -1 : 1});
-      this.$emit('modal-closed', isOK ? this.values : null);
+      const result = {
+        title: this.title,
+        description: this.description,
+        daysOfTheWeek: days
+      }
+      this.$emit('modal-closed', isOK ? result : null);
     },
   },
 };
