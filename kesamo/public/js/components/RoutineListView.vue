@@ -224,6 +224,7 @@ export default {
     saveEditModalResult(result) {
       this.showModal = false;
       if (result) {
+        console.log("@@@result.daysOfTheWeek: ",result.daysOfTheWeek);
         this.routineValues[this.editingIndex].title = result.title;
         this.routineValues[this.editingIndex].description = result.description;
       }

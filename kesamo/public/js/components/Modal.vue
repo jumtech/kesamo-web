@@ -20,30 +20,30 @@ transition(name='modal')
               textarea#description(v-model='values.description')
           .form-group.has-option
             .checkbox
-              input(type='checkbox')
-              span: | for only some day of the week
-          .form-group.option(v-if='showDayOfTheWeek')
+              input(type='checkbox' v-model='showDaysOfTheWeek')
+              label: | for only some day of the week
+          .form-group.option(v-if='showDaysOfTheWeek')
             .checkbox
-              input(type='checkbox')
-              span: | Monday
+              input(type='checkbox' value='0' v-model='daysOfTheWeek')
+              label: | Monday
             .checkbox
-              input(type='checkbox')
-              span: | Tuesday
+              input(type='checkbox'  value='1' v-model='daysOfTheWeek')
+              label: | Tuesday
             .checkbox
-              input(type='checkbox')
-              span: | Wednesday
+              input(type='checkbox' value='2' v-model='daysOfTheWeek')
+              label: | Wednesday
             .checkbox
-              input(type='checkbox')
-              span: | Thursday
+              input(type='checkbox' value='3' v-model='daysOfTheWeek')
+              label: | Thursday
             .checkbox
-              input(type='checkbox')
-              span: | Friday
+              input(type='checkbox' value='4'  v-model='daysOfTheWeek')
+              label: | Friday
             .checkbox
-              input(type='checkbox')
-              span: | Saturday
+              input(type='checkbox' value='5'  v-model='daysOfTheWeek')
+              label: | Saturday
             .checkbox
-              input(type='checkbox')
-              span: | Sunday
+              input(type='checkbox' value='6'  v-model='daysOfTheWeek')
+              label: | Sunday
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -65,20 +65,25 @@ export default {
       default: {
         title: '',
         description: '',
-        dayOfTheWeek: [],
+        daysOfTheWeek: [],
       },
     }
   },
   data() {
-    return {};
+    return {
+      showDaysOfTheWeek: false,
+      daysOfTheWeek: []
+    };
   },
-  computed: {
-    showDayOfTheWeek() {
-      return false;
+  created() {
+    if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
+      this.showDaysOfTheWeek = true;
+      this.daysOfTheWeek = this.values.daysOfTheWeek.map((v) => v);
     }
   },
   methods: {
     emitCloseEvent(isOK) {
+      this.values.daysOfTheWeek = this.daysOfTheWeek.map((v) => v);
       this.$emit('modal-closed', isOK ? this.values : null);
     },
   },
@@ -133,8 +138,6 @@ $modal-item-top-margin = 20px
 .form-group
   margin $modal-item-top-margin 0
   font-size 1.6rem
-  & span
-    font-size 0.8rem
   &.has-option
     margin-bottom 0
   &.option
@@ -156,4 +159,7 @@ $modal-item-top-margin = 20px
       max-height 200px
       font-size 1.2rem
       resize vertical
+  & .checkbox
+    & label
+      font-size 0.8rem
 </style>
