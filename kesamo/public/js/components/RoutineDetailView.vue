@@ -1,7 +1,14 @@
 <template lang='pug'>
 .container.ksm_center-without-header
   loading(v-if='isRoutineLoading')
-  template(v-if='!isRoutineLoading && routines_ && routines_.length > 0 && routines_[currentIndex_]')
+  template(v-else-if='isEmpty')
+    .message
+      p.message-item
+        | No Routine to show!
+      .message-item
+        button.create-button(@click='moveToListView()')
+          | Create new Routine
+  template(v-else-if='routines_ && routines_.length > 0 && routines_[currentIndex_]')
     .routine
       p.title
         | {{routines_[currentIndex_].title}}
@@ -42,6 +49,7 @@ export default {
       currentIndex_: 0,
       showAccount: false,
       isRoutineLoading: false,
+      isEmpty: true,
     };
   },
   props: {
@@ -63,20 +71,23 @@ export default {
     },
   },
   created() {
-    this.currentIndex_ = this.currentFilterdRoutineIndex || 0;
-    if (this.routines) {
+    if (!this.routines) {
+      this.isRoutineLoading = true;
+    } else {
       const {routines, filterdRoutines} = this.proccessRoutines(this.routines.getValues());
       this.routines_ = filterdRoutines;
-      const filterdIndex = this.calcFilterdIndex(this.currentRoutineIndex, routines, filterdRoutines);
-      this.currentIndex_ = filterdIndex;
-    } else {
-      this.isRoutineLoading = true;
+      if (this.routines_.length !== 0) {
+        this.isEmpty = false;
+        const filterdIndex = this.calcFilterdIndex(this.currentRoutineIndex, routines, filterdRoutines);
+        this.currentIndex_ = filterdIndex;
+      }
     }
   },
   watch: {
     routines: {
       handler(val) {
         this.routines_ = val.values.filter(this.isTodaysRoutine);
+        this.isEmpty = this.routines_.length === 0;
         this.isRoutineLoading = false;
       },
       deep: true
@@ -92,6 +103,7 @@ export default {
   },
   methods: {
     proccessRoutines(routines) {
+      if (routines.length === 0) return { routines: [], filterdRoutines: [] };
       routines = routines.map((r, i) => {
         r.isTodaysRoutine = this.isTodaysRoutine(r);
         r.index = i;
@@ -136,6 +148,10 @@ export default {
       if (!routine.daysOfTheWeek || !Array.isArray(routine.daysOfTheWeek)) return true;
       const todaysDay = (new Date()).getDay();
       return routine.daysOfTheWeek.includes(todaysDay);
+    },
+    moveToListView() {
+      // TODO: switch tabs without page load
+      location.href = '/routines';
     },
   }
 };
@@ -233,4 +249,15 @@ export default {
               color #FF0337
             &:active
               color #980220
+  & .message
+    & .message-item
+      margin 20px 0 20px 0
+      font-size 1.2rem
+    & button.create-button
+      padding 10px 10px 10px 10px
+      font-size 1.2rem
+      background-color #538D8F
+      border-radius 5px
+      color white
+
 </style>
