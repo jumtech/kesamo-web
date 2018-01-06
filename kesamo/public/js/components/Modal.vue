@@ -18,6 +18,32 @@ transition(name='modal')
                 | description
             .input
               textarea#description(v-model='values.description')
+          .form-group.has-option
+            .checkbox
+              input(type='checkbox')
+              span: | for only some day of the week
+          .form-group.option(v-if='showDayOfTheWeek')
+            .checkbox
+              input(type='checkbox')
+              span: | Monday
+            .checkbox
+              input(type='checkbox')
+              span: | Tuesday
+            .checkbox
+              input(type='checkbox')
+              span: | Wednesday
+            .checkbox
+              input(type='checkbox')
+              span: | Thursday
+            .checkbox
+              input(type='checkbox')
+              span: | Friday
+            .checkbox
+              input(type='checkbox')
+              span: | Saturday
+            .checkbox
+              input(type='checkbox')
+              span: | Sunday
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -39,11 +65,17 @@ export default {
       default: {
         title: '',
         description: '',
+        dayOfTheWeek: [],
       },
     }
   },
   data() {
     return {};
+  },
+  computed: {
+    showDayOfTheWeek() {
+      return false;
+    }
   },
   methods: {
     emitCloseEvent(isOK) {
@@ -101,6 +133,13 @@ $modal-item-top-margin = 20px
 .form-group
   margin $modal-item-top-margin 0
   font-size 1.6rem
+  & span
+    font-size 0.8rem
+  &.has-option
+    margin-bottom 0
+  &.option
+    margin-top 0
+    margin-left 20px
   & .input
     margin 10px 0 10px 0
     & input, textarea
