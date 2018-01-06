@@ -52,7 +52,7 @@ export default {
       type: Routines,
       default: null,
     },
-    currentRoutineRawIndex: {
+    currentRoutineIndex: {
       type: Number,
       default: 0
     },
@@ -72,7 +72,7 @@ export default {
   created() {
     if (this.routines) {
       this.routineValues = this.routines.getValues();
-      this.$nextTick(() => this.selectAndScrollTo(this.currentRoutineRawIndex));
+      this.$nextTick(() => this.selectAndScrollTo(this.currentRoutineIndex));
     } else {
       this.isRoutineLoading = true;
     }

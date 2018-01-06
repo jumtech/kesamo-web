@@ -7,8 +7,8 @@
     router-view.content(v-if="user"
       :routines='routines'
       :user='user'
+      :currentFilterdRoutineIndex='currentFilterdRoutineIndex'
       :currentRoutineIndex='currentRoutineIndex'
-      :currentRoutineRawIndex='currentRoutineRawIndex'
       @routines-updated='updateRoutines'
       @current-routine-index-updated='updateCurrentRoutineIndex'
     )
@@ -47,8 +47,8 @@ export default {
       user: null,
       routines: null,
       isUserLoading: false,
-      currentRoutineIndex: 0,
-      currentRoutineRawIndex: 0
+      currentFilterdRoutineIndex: 0,
+      currentRoutineIndex: 0
     }
   },
   created() {
@@ -85,8 +85,8 @@ export default {
       this.routines.saveValues(values);
     },
     updateCurrentRoutineIndex(result) {
+      this.currentFilterdRoutineIndex = result.filterdIndex;
       this.currentRoutineIndex = result.index;
-      this.currentRoutineRawIndex = result.rawIndex;
     },
   }
 };

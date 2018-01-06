@@ -53,17 +53,17 @@ export default {
       type: Object,
       default: null
     },
-    currentRoutineIndex: {
+    currentFilterdRoutineIndex: {
       type: Number,
       default: 0
     },
-    currentRoutineRawIndex: {
+    currentRoutineIndex: {
       type: Number,
       default: 0
     },
   },
   created() {
-    this.currentIndex = this.currentRoutineIndex || 0;
+    this.currentIndex = this.currentFilterdRoutineIndex || 0;
     if (this.routines) {
       let rawValues = this.routines.getValues();
       rawValues = rawValues.map((r) => {
@@ -71,16 +71,16 @@ export default {
         return r;
       });
       let values = rawValues.map((r, i) => {
-        r.rawIndex = i;
+        r.index = i;
         return r;
       });
       values = values.filter((r) => r.isTodaysRoutine);
       this.routineValues = values;
       let index = 0;
-      for (let i = this.currentRoutineRawIndex; i > -1; i--) {
+      for (let i = this.currentRoutineIndex; i > -1; i--) {
         if (rawValues[i].isTodaysRoutine) {
           index = values.findIndex((r) => {
-            return r.rawIndex === i;
+            return r.index === i;
           });
           break;
         }
@@ -111,8 +111,8 @@ export default {
     advanceRoutine(n) {
       const i = this.currentIndex + n;
       let result = {
-        index: i,
-        rawIndex: this.routineValues[i].rawIndex
+        filterdIndex: i,
+        index: this.routineValues[i].index
       };
       this.$emit('current-routine-index-updated', result);
       this.currentIndex = i;
