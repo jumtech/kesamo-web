@@ -59,7 +59,7 @@ export default {
   },
   created() {
     if (this.routines) {
-      this.routineValues = this.routines.getValues();
+      this.routineValues = this.filterTodaysDayOfTheWeek(this.routines.getValues());
     } else {
       this.isRoutineLoading = true;
     }
@@ -67,7 +67,7 @@ export default {
   watch: {
     routines: {
       handler(val) {
-        this.routineValues = val.values;
+        this.routineValues = this.filterTodaysDayOfTheWeek(val.values);
         this.isRoutineLoading = false;
       },
       deep: true
@@ -84,7 +84,7 @@ export default {
   methods: {
     advanceRoutine(n) {
       const i = this.currentRoutineIndex + n;
-      this.$emit('current-routine-index-updated', i);
+        this.$emit('current-routine-index-updated', i);
     },
     toggleAccount() {
       this.showAccount = !this.showAccount;
@@ -95,7 +95,15 @@ export default {
       }, (err) => {
         console.error('logout error: ', err);
       });
-    }
+    },
+    filterTodaysDayOfTheWeek(routines) {
+      if (!routines) return [];
+      return routines.filter((r) => {
+        if (!Array.isArray(r.daysOfTheWeek)) return true;
+        const todaysDay = (new Date()).getDay();
+        return r.daysOfTheWeek.includes(todaysDay);
+      });
+    },
   }
 };
 </script>
