@@ -65,27 +65,10 @@ export default {
   created() {
     this.currentIndex_ = this.currentFilterdRoutineIndex || 0;
     if (this.routines) {
-      let rawValues = this.routines.getValues();
-      rawValues = rawValues.map((r) => {
-        r.isTodaysRoutine = this.isTodaysRoutine(r);
-        return r;
-      });
-      let values = rawValues.map((r, i) => {
-        r.index = i;
-        return r;
-      });
-      values = values.filter((r) => r.isTodaysRoutine);
-      this.routines_ = values;
-      let index = 0;
-      for (let i = this.currentRoutineIndex; i > -1; i--) {
-        if (rawValues[i].isTodaysRoutine) {
-          index = values.findIndex((r) => {
-            return r.index === i;
-          });
-          break;
-        }
-      }
-      this.currentIndex_ = index;
+      const {routines, filterdRoutines} = this.proccessRoutines(this.routines.getValues());
+      this.routines_ = filterdRoutines;
+      const filterdIndex = this.calcFilterdIndex(this.currentRoutineIndex, routines, filterdRoutines);
+      this.currentIndex_ = filterdIndex;
     } else {
       this.isRoutineLoading = true;
     }
@@ -108,6 +91,27 @@ export default {
     }
   },
   methods: {
+    proccessRoutines(routines) {
+      routines = routines.map((r, i) => {
+        r.isTodaysRoutine = this.isTodaysRoutine(r);
+        r.index = i;
+        return r;
+      });
+      let filterdRoutines = routines.filter((r) => r.isTodaysRoutine);
+      return {routines, filterdRoutines};
+    },
+    calcFilterdIndex(index, routines, filterdRoutines) {
+      let filterdIndex = 0;
+      for (let i = index; i > -1; i--) {
+        if (routines[i].isTodaysRoutine) {
+          filterdIndex = filterdRoutines.findIndex((r) => {
+            return r.index === i;
+          });
+          break;
+        }
+      }
+      return filterdIndex;
+    },
     advanceRoutine(n) {
       const i = this.currentIndex_ + n;
       let result = {
