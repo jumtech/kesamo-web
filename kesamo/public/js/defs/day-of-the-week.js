@@ -1,9 +1,9 @@
 export default [
-  { NAME: 'Monday',    VALUE: 0 },
-  { NAME: 'Tuesday',   VALUE: 1 },
-  { NAME: 'Wednesday', VALUE: 2 },
-  { NAME: 'Thursday',  VALUE: 3 },
-  { NAME: 'Friday',    VALUE: 4 },
-  { NAME: 'Saturday',  VALUE: 5 },
-  { NAME: 'Sunday',    VALUE: 6 },
+  { NAME: 'Monday',    VALUE: 1 },
+  { NAME: 'Tuesday',   VALUE: 2 },
+  { NAME: 'Wednesday', VALUE: 3 },
+  { NAME: 'Thursday',  VALUE: 4 },
+  { NAME: 'Friday',    VALUE: 5 },
+  { NAME: 'Saturday',  VALUE: 6 },
+  { NAME: 'Sunday',    VALUE: 0 },
 ]
