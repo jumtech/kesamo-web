@@ -215,18 +215,20 @@ export default {
       this.startEdit(i);
       const title = this.routineValues[this.editingIndex].title;
       const description = this.routineValues[this.editingIndex].description;
+      const daysOfTheWeek = this.routineValues[this.editingIndex].daysOfTheWeek;
       this.modalValues = {
         title: title,
         description: description ? description : '',
+        daysOfTheWeek: daysOfTheWeek
       };
       this.showModal = true;
     },
     saveEditModalResult(result) {
       this.showModal = false;
       if (result) {
-        console.log("@@@result.daysOfTheWeek: ",result.daysOfTheWeek);
         this.routineValues[this.editingIndex].title = result.title;
         this.routineValues[this.editingIndex].description = result.description;
+        this.routineValues[this.editingIndex].daysOfTheWeek = result.daysOfTheWeek;
       }
       this.endEdit(this.editingIndex);
     }
