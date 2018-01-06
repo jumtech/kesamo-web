@@ -83,7 +83,10 @@ export default {
   },
   methods: {
     emitCloseEvent(isOK) {
-      this.values.daysOfTheWeek = this.daysOfTheWeek.map((v) => v);
+      this.values.daysOfTheWeek =
+        this.daysOfTheWeek
+          .map((v) => Number(v))
+          .sort((a, b) => {return a < b ? -1 : 1});
       this.$emit('modal-closed', isOK ? this.values : null);
     },
   },
