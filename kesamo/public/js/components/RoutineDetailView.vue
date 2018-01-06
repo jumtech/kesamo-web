@@ -132,6 +132,7 @@ export default {
       });
     },
     isTodaysRoutine(routine) {
+      if (!routine.isForOnlySomeDays) return true;
       if (!routine.daysOfTheWeek || !Array.isArray(routine.daysOfTheWeek)) return true;
       const todaysDay = (new Date()).getDay();
       return routine.daysOfTheWeek.includes(todaysDay);

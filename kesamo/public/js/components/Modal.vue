@@ -20,9 +20,9 @@ transition(name='modal')
               textarea#description(v-model='description_')
           .form-group.has-option
             .checkbox
-              input(type='checkbox' v-model='showDaysOfTheWeek')
+              input(type='checkbox' v-model='isForOnlySomeDays_')
               label: | for only some days of the week
-          .form-group.option(v-if='showDaysOfTheWeek')
+          .form-group.option(v-if='isForOnlySomeDays_')
             .checkbox(v-for='DAY in DAYS')
               input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
               label: | {{DAY.NAME}}
@@ -58,14 +58,14 @@ export default {
       title_: '',
       description_: '',
       daysOfTheWeek_: [],
-      showDaysOfTheWeek: false,
+      isForOnlySomeDays_: false,
     };
   },
   created() {
-    this.title_ = this.values.title;
-    this.description_ = this.values.description;
+    this.title_ = this.values.title || '';
+    this.description_ = this.values.description || '';
+    this.isForOnlySomeDays_ = this.values.isForOnlySomeDays || false;
     if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
-      this.showDaysOfTheWeek = true;
       this.daysOfTheWeek_ = this.values.daysOfTheWeek.map((v) => v.toString());
     }
   },
@@ -83,7 +83,8 @@ export default {
       const result = {
         title: this.title_,
         description: this.description_,
-        daysOfTheWeek: days
+        isForOnlySomeDays: this.isForOnlySomeDays_,
+        daysOfTheWeek: days,
       }
       this.$emit('modal-closed', isOK ? result : null);
     },

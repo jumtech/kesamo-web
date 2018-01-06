@@ -66,7 +66,7 @@ export default {
       oldRoutine: null,
       isRoutineLoading: false,
       showModal: false,
-      modalValues: {title: 'parent-title', description: 'parent-description'},
+      modalValues: {},
     };
   },
   created() {
@@ -216,10 +216,12 @@ export default {
       const title = this.routines_[this.editingIndex].title;
       const description = this.routines_[this.editingIndex].description;
       const daysOfTheWeek = this.routines_[this.editingIndex].daysOfTheWeek;
+      const isForOnlySomeDays = this.routines_[this.editingIndex].isForOnlySomeDays;
       this.modalValues = {
         title: title,
         description: description ? description : '',
-        daysOfTheWeek: daysOfTheWeek
+        daysOfTheWeek: daysOfTheWeek,
+        isForOnlySomeDays: isForOnlySomeDays
       };
       this.showModal = true;
     },
@@ -229,6 +231,7 @@ export default {
         this.routines_[this.editingIndex].title = result.title;
         this.routines_[this.editingIndex].description = result.description;
         this.routines_[this.editingIndex].daysOfTheWeek = result.daysOfTheWeek;
+        this.routines_[this.editingIndex].isForOnlySomeDays = result.isForOnlySomeDays;
       }
       this.endEdit(this.editingIndex);
     }
