@@ -21,7 +21,7 @@ transition(name='modal')
           .form-group.has-option
             .checkbox
               input(type='checkbox' v-model='showDaysOfTheWeek')
-              label: | for only some day of the week
+              label: | for only some days of the week
           .form-group.option(v-if='showDaysOfTheWeek')
             .checkbox(v-for='DAY in DAYS')
               input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek')
