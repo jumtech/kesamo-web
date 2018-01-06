@@ -1,16 +1,16 @@
 <template lang='pug'>
 .container.ksm_center-without-header
   loading(v-if='isRoutineLoading')
-  template(v-if='!isRoutineLoading && routineValues && routineValues.length > 0')
+  template(v-if='!isRoutineLoading && routines_ && routines_.length > 0 && routines_[currentIndex_]')
     .routine
       p.title
-        | {{routineValues[currentRoutineIndex].title}}
-      .description(v-if='descriptions[currentRoutineIndex]')
-        p.description-line(v-for='line in descriptions[currentRoutineIndex]')
+        | {{routines_[currentIndex_].title}}
+      .description(v-if='descriptions[currentIndex_]')
+        p.description-line(v-for='line in descriptions[currentIndex_]')
           | {{line}}
-    .side-tap-area.left(v-if='currentRoutineIndex > 0' @click='advanceRoutine(-1)')
+    .side-tap-area.left(v-if='currentIndex_ > 0' @click='advanceRoutine(-1)')
       .arrow-icon.left
-    .side-tap-area.right(v-if='currentRoutineIndex < routineValues.length - 1' @click='advanceRoutine(1)')
+    .side-tap-area.right(v-if='currentIndex_ < routines_.length - 1' @click='advanceRoutine(1)')
       .arrow-icon.right
   .accout-button(@click='toggleAccount')
     i(class='fa fa-user-o' aria-hidden='true')
@@ -38,7 +38,8 @@ export default {
   },
   data() {
     return {
-      routineValues: null,
+      routines_: null,
+      currentIndex_: 0,
       showAccount: false,
       isRoutineLoading: false,
     };
@@ -52,14 +53,22 @@ export default {
       type: Object,
       default: null
     },
+    currentFilterdRoutineIndex: {
+      type: Number,
+      default: 0
+    },
     currentRoutineIndex: {
       type: Number,
       default: 0
     },
   },
   created() {
+    this.currentIndex_ = this.currentFilterdRoutineIndex || 0;
     if (this.routines) {
-      this.routineValues = this.routines.getValues();
+      const {routines, filterdRoutines} = this.proccessRoutines(this.routines.getValues());
+      this.routines_ = filterdRoutines;
+      const filterdIndex = this.calcFilterdIndex(this.currentRoutineIndex, routines, filterdRoutines);
+      this.currentIndex_ = filterdIndex;
     } else {
       this.isRoutineLoading = true;
     }
@@ -67,7 +76,7 @@ export default {
   watch: {
     routines: {
       handler(val) {
-        this.routineValues = val.values;
+        this.routines_ = val.values.filter(this.isTodaysRoutine);
         this.isRoutineLoading = false;
       },
       deep: true
@@ -76,15 +85,41 @@ export default {
   computed: {
     // TODO: make 'RoutineDetail.vue' & delete this computed property
     descriptions() {
-      return this.routineValues.map((routine) => {
+      return this.routines_.map((routine) => {
         return routine.description ? routine.description.split('\n') : [];
       });
     }
   },
   methods: {
+    proccessRoutines(routines) {
+      routines = routines.map((r, i) => {
+        r.isTodaysRoutine = this.isTodaysRoutine(r);
+        r.index = i;
+        return r;
+      });
+      let filterdRoutines = routines.filter((r) => r.isTodaysRoutine);
+      return {routines, filterdRoutines};
+    },
+    calcFilterdIndex(index, routines, filterdRoutines) {
+      let filterdIndex = 0;
+      for (let i = index; i > -1; i--) {
+        if (routines[i].isTodaysRoutine) {
+          filterdIndex = filterdRoutines.findIndex((r) => {
+            return r.index === i;
+          });
+          break;
+        }
+      }
+      return filterdIndex;
+    },
     advanceRoutine(n) {
-      const i = this.currentRoutineIndex + n;
-      this.$emit('current-routine-index-updated', i);
+      const i = this.currentIndex_ + n;
+      let result = {
+        filterdIndex: i,
+        index: this.routines_[i].index
+      };
+      this.$emit('current-routine-index-updated', result);
+      this.currentIndex_ = i;
     },
     toggleAccount() {
       this.showAccount = !this.showAccount;
@@ -95,7 +130,13 @@ export default {
       }, (err) => {
         console.error('logout error: ', err);
       });
-    }
+    },
+    isTodaysRoutine(routine) {
+      if (!routine.isForOnlySomeDays) return true;
+      if (!routine.daysOfTheWeek || !Array.isArray(routine.daysOfTheWeek)) return true;
+      const todaysDay = (new Date()).getDay();
+      return routine.daysOfTheWeek.includes(todaysDay);
+    },
   }
 };
 </script>

@@ -11,13 +11,21 @@ transition(name='modal')
               label(for='title')
                 | title
             .input
-              input#title(v-model='values.title' maxlength='30')
+              input#title(v-model='title_' maxlength='30')
           .form-group
             .label
               label(for='description')
                 | description
             .input
-              textarea#description(v-model='values.description')
+              textarea#description(v-model='description_')
+          .form-group.has-option
+            .checkbox
+              input(type='checkbox' v-model='isForOnlySomeDays_')
+              label: | for only some days of the week
+          .form-group.option(v-if='isForOnlySomeDays_')
+            .checkbox(v-for='DAY in DAYS')
+              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
+              label: | {{DAY.NAME}}
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -28,6 +36,8 @@ transition(name='modal')
 </template>
 
 <script>
+import DAY_OF_THE_WEEK from '../defs/day-of-the-week';
+
 export default {
   props: {
     heading: {
@@ -39,15 +49,44 @@ export default {
       default: {
         title: '',
         description: '',
+        daysOfTheWeek: [],
       },
     }
   },
   data() {
-    return {};
+    return {
+      title_: '',
+      description_: '',
+      daysOfTheWeek_: [],
+      isForOnlySomeDays_: false,
+    };
+  },
+  created() {
+    this.title_ = this.values.title || '';
+    this.description_ = this.values.description || '';
+    this.isForOnlySomeDays_ = this.values.isForOnlySomeDays || false;
+    if (Array.isArray(this.values.daysOfTheWeek) && this.values.daysOfTheWeek.length > 0) {
+      this.daysOfTheWeek_ = this.values.daysOfTheWeek.map((v) => v.toString());
+    }
+  },
+  computed: {
+    DAYS() {
+      return DAY_OF_THE_WEEK;
+    }
   },
   methods: {
     emitCloseEvent(isOK) {
-      this.$emit('modal-closed', isOK ? this.values : null);
+      const days =
+        this.daysOfTheWeek_
+          .map((v) => Number(v))
+          .sort((a, b) => {return a < b ? -1 : 1});
+      const result = {
+        title: this.title_,
+        description: this.description_,
+        isForOnlySomeDays: this.isForOnlySomeDays_,
+        daysOfTheWeek: days,
+      }
+      this.$emit('modal-closed', isOK ? result : null);
     },
   },
 };
@@ -101,6 +140,11 @@ $modal-item-top-margin = 20px
 .form-group
   margin $modal-item-top-margin 0
   font-size 1.6rem
+  &.has-option
+    margin-bottom 0
+  &.option
+    margin-top 0
+    margin-left 20px
   & .input
     margin 10px 0 10px 0
     & input, textarea
@@ -117,4 +161,7 @@ $modal-item-top-margin = 20px
       max-height 200px
       font-size 1.2rem
       resize vertical
+  & .checkbox
+    & label
+      font-size 0.8rem
 </style>
