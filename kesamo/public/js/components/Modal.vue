@@ -50,6 +50,7 @@ export default {
         title: '',
         description: '',
         daysOfTheWeek: [],
+        isForOnlySomeDays: false,
       },
     }
   },
