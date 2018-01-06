@@ -2,15 +2,25 @@
 mixin list-items
   li.list-item(v-for='(routine, i) in routines_' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}' :id='i')
     template(v-if='editingIndex === i')
-      p.title
-        input(:id='"input" + i' v-model='routines_[i].title' @blur='endEditIfNeeded(i)')
+      .list-item-content-main
+        p.title
+          input(:id='"input" + i' v-model='routines_[i].title' @blur='endEditIfNeeded(i)')
       .icon.delete(@click='deleteRoutine(i)')
         i.fa.fa-trash(aria-hidden='true')
     template(v-else)
       .icon.drag(@click='enableDrag(i)')
         i.fa.fa-bars(aria-hidden='true')
       .list-item-content
-        p.title(@click='startEdit(i)'): | {{routine.title}}
+        .list-item-content-main(@click='startEdit(i)')
+          p.title: | {{routine.title}}
+          .week-rects(v-if='routine.isForOnlySomeDays')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(1)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(2)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(3)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(4)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(5)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(6)}')
+            .rect(:class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(0)}')
         .icon.edit(@click='showEditModal(i)')
           i.fa.fa-pencil(aria-hidden='true')
 
@@ -254,14 +264,26 @@ $icon-side-padding = 20px
       display flex
       align-items center
       width "calc(100vw - (%s + %s * 2))" % ($icon-raw-width $icon-side-padding)
-    & .title
-      padding 20px 10px 20px 20px
-      flex-grow 1
-      font-size 1.6rem
-      word-break break-all
-      & input
-        width 100%
-        font-size 1.6rem
+      &-main
+        padding 20px 10px 20px 20px
+        flex-grow 1
+        & .title
+          font-size 1.6rem
+          word-break break-all
+          & input
+            width 100%
+            font-size 1.6rem
+        & .week-rects
+          height 10px
+          margin-top 5px
+          display flex
+          & .rect
+            width 10px
+            height 10px
+            margin-right 10px
+            background-color #EBF7DA
+            &.on
+              background-color #538D8F
     & .icon
       width "calc(%s + %s * 2)" % ($icon-raw-width $icon-side-padding)
       font-size 1.6rem
