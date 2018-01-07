@@ -43,6 +43,7 @@ import Loading from './Loading.vue';
 import Modal from './Modal.vue';
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESC = 27;
+const USE_MODAL = true;
 let timer = null;
 
 export default {
@@ -152,18 +153,20 @@ export default {
         this.startEdit(i);
       });
     },
-    startEdit(i, event) {
+    startEdit(i, useModal) {
       this.draggingIndex = null;
       if (!this.routines_[i]) return;
       this.editingIndex = i;
       this.$nextTick(() => {
         this.selectedIndex = i;
       });
-      this.focusInput(i);
-      try {
-        this.oldRoutine = JSON.parse(JSON.stringify(this.routines_[i]));
-      } catch(e) {
-        this.oldRoutine = null;
+      if (!useModal) {
+        this.focusInput(i);
+        try {
+          this.oldRoutine = JSON.parse(JSON.stringify(this.routines_[i]));
+        } catch(e) {
+          this.oldRoutine = null;
+        }
       }
     },
     focusInput(i) {
@@ -216,11 +219,11 @@ export default {
       this.draggingIndex = i;
     },
     showEditModal(i) {
-      this.startEdit(i);
-      const title = this.routines_[this.editingIndex].title;
-      const description = this.routines_[this.editingIndex].description;
-      const daysOfTheWeek = this.routines_[this.editingIndex].daysOfTheWeek;
-      const isForOnlySomeDays = this.routines_[this.editingIndex].isForOnlySomeDays;
+      this.startEdit(i, USE_MODAL);
+      const title = this.routines_[i].title;
+      const description = this.routines_[i].description;
+      const daysOfTheWeek = this.routines_[i].daysOfTheWeek;
+      const isForOnlySomeDays = this.routines_[i].isForOnlySomeDays;
       this.modalValues = {
         title: title,
         description: description ? description : '',
