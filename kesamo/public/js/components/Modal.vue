@@ -20,15 +20,16 @@ transition(name='modal')
               textarea#description(v-model='description_')
           .form-group.has-option
             .checkbox
-              input(type='checkbox' v-model='isForOnlySomeDays_')
-              label: | for only some days of the week
+              label
+                input(type='checkbox' v-model='isForOnlySomeDays_')
+                span: | for only some days of the week
           .form-group.option(v-if='isForOnlySomeDays_')
             .checkbox.flex-row
               .checkbox-item(v-for='DAY in DAYS')
                 .checkbox-item-each
-                  input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
+                  input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_' :id='DAY.SHORT_NAME')
                 .checkbox-item-each
-                  label: | {{DAY.SHORT_NAME}}
+                  label(:for='DAY.SHORT_NAME'): | {{DAY.SHORT_NAME}}
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
