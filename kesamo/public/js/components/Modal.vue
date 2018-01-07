@@ -119,7 +119,7 @@ $modal-item-top-margin = 20px
   box-shadow 0 2px 8px rgba(0, 0, 0, .33)
   transition all .3s ease
 .modal-header
-  font-size 1.8rem
+  font-size 1.2rem
   margin 0
   color #538D8F
 .modal-body
@@ -146,21 +146,23 @@ $modal-item-top-margin = 20px
   &.option
     margin-top 0
     margin-left 20px
+  & .label
+    font-size 1.2rem
   & .input
-    margin 10px 0 10px 0
+    margin 5px 0 0 0
     & input, textarea
       box-sizing border-box
       width 100%
       padding 5px
       border 1px solid #BFBFBF
       border-radius 2px
-      font-size 1.6rem
+      font-size 1.2rem
     & input
       height 40px
     & textarea
       height 100px
       max-height 200px
-      font-size 1.2rem
+      font-size 1.0rem
       resize vertical
   & .checkbox
     & label
