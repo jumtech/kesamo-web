@@ -23,9 +23,12 @@ transition(name='modal')
               input(type='checkbox' v-model='isForOnlySomeDays_')
               label: | for only some days of the week
           .form-group.option(v-if='isForOnlySomeDays_')
-            .checkbox(v-for='DAY in DAYS')
-              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
-              label: | {{DAY.NAME}}
+            .checkbox.flex-row
+              .checkbox-item(v-for='DAY in DAYS')
+                .checkbox-item-each
+                  input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
+                .checkbox-item-each
+                  label: | {{DAY.SHORT_NAME}}
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -125,6 +128,7 @@ $modal-item-top-margin = 20px
 .modal-body
   margin $modal-item-top-margin 0
 .modal-footer
+  padding 10px 0 0 0
   display flex
   justify-content space-around
   & button
@@ -167,4 +171,14 @@ $modal-item-top-margin = 20px
   & .checkbox
     & label
       font-size 0.8rem
+    &.flex-row
+      display flex
+      & .checkbox-item
+        margin 0 10px 0 0
+        &-each
+          height 15px
+          text-align center
+          & label
+            font-size 0.6rem
+            color #7F7F7F
 </style>
