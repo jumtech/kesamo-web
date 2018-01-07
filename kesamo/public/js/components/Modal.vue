@@ -20,12 +20,16 @@ transition(name='modal')
               textarea#description(v-model='description_')
           .form-group.has-option
             .checkbox
-              input(type='checkbox' v-model='isForOnlySomeDays_')
-              label: | for only some days of the week
+              label
+                input(type='checkbox' v-model='isForOnlySomeDays_')
+                span: | for only some days of the week
           .form-group.option(v-if='isForOnlySomeDays_')
-            .checkbox(v-for='DAY in DAYS')
-              input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_')
-              label: | {{DAY.NAME}}
+            .checkbox.flex-row
+              .checkbox-item(v-for='DAY in DAYS')
+                .checkbox-item-each
+                  input(type='checkbox' :value='DAY.VALUE' v-model='daysOfTheWeek_' :id='DAY.SHORT_NAME')
+                .checkbox-item-each
+                  label(:for='DAY.SHORT_NAME'): | {{DAY.SHORT_NAME}}
         .modal-footer
           .modal-cancel-button
             button(@click='emitCloseEvent(false)')
@@ -119,12 +123,13 @@ $modal-item-top-margin = 20px
   box-shadow 0 2px 8px rgba(0, 0, 0, .33)
   transition all .3s ease
 .modal-header
-  font-size 1.8rem
+  font-size 1.2rem
   margin 0
   color #538D8F
 .modal-body
   margin $modal-item-top-margin 0
 .modal-footer
+  padding 10px 0 0 0
   display flex
   justify-content space-around
   & button
@@ -146,23 +151,35 @@ $modal-item-top-margin = 20px
   &.option
     margin-top 0
     margin-left 20px
+  & .label
+    font-size 1.2rem
   & .input
-    margin 10px 0 10px 0
+    margin 5px 0 0 0
     & input, textarea
       box-sizing border-box
       width 100%
       padding 5px
       border 1px solid #BFBFBF
       border-radius 2px
-      font-size 1.6rem
+      font-size 1.2rem
     & input
       height 40px
     & textarea
       height 100px
       max-height 200px
-      font-size 1.2rem
+      font-size 1.0rem
       resize vertical
   & .checkbox
     & label
       font-size 0.8rem
+    &.flex-row
+      display flex
+      & .checkbox-item
+        margin 0 10px 0 0
+        &-each
+          height 15px
+          text-align center
+          & label
+            font-size 0.6rem
+            color #7F7F7F
 </style>
