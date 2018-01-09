@@ -11,7 +11,7 @@ mixin list-items
       .icon.drag(@click='enableDrag(i)')
         i.fa.fa-bars(aria-hidden='true')
       .list-item-content
-        .list-item-content-main(@click='startEdit(i)')
+        .list-item-content-main(@touchstart='startEditIfDoubleTapped(i, $event)')
           p.title: | {{routine.title}}
           .week-rects(v-if='routine.isForOnlySomeDays')
             .rect(v-for="n in [1,2,3,4,5,6,0]" :class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(n)}')
@@ -72,6 +72,7 @@ export default {
       isRoutineLoading: false,
       showModal: false,
       modalValues: {},
+      titleTappedCount: 0,
     };
   },
   created() {
@@ -152,6 +153,17 @@ export default {
       this.$nextTick(() => {
         this.startEdit(i);
       });
+    },
+    startEditIfDoubleTapped(i, event) {
+      if (this.titleTappedCount === 0) {
+        this.select(i);
+        this.titleTappedCount++;
+        setTimeout(() => { this.titleTappedCount = 0 }, 350);
+      } else {
+        this.startEdit(i);
+        event.preventDefault();
+        this.titleTappedCount = 0;
+      }
     },
     startEdit(i, useModal) {
       this.draggingIndex = null;
