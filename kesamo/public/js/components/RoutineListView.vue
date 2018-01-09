@@ -72,7 +72,7 @@ export default {
       isRoutineLoading: false,
       showModal: false,
       modalValues: {},
-      titleTappedCount: 0,
+      tappedTitleIndex: -1,
     };
   },
   created() {
@@ -155,14 +155,14 @@ export default {
       });
     },
     startEditIfDoubleTapped(i, event) {
-      if (this.titleTappedCount === 0) {
-        this.select(i);
-        this.titleTappedCount++;
-        setTimeout(() => { this.titleTappedCount = 0 }, 350);
-      } else {
+      if (this.tappedTitleIndex === i) {
         this.startEdit(i);
         event.preventDefault();
-        this.titleTappedCount = 0;
+        this.tappedTitleIndex = -1;
+      } else {
+        this.select(i);
+        this.tappedTitleIndex = i;
+        setTimeout(() => { this.tappedTitleIndex = -1 }, 350);
       }
     },
     startEdit(i, useModal) {
