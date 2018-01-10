@@ -17,20 +17,6 @@
         | Login with Google
 </template>
 
-<style lang="stylus" scoped>
-.container
-  width 100vw
-  height 100vh
-  & .content
-    height calc(100vh - 60px)
-  & .login-button
-    padding 10px 10px 10px 10px
-    font-size 1.2rem
-    background-color #538D8F
-    border-radius 5px
-    color white
-</style>
-
 <script>
 import TabView from './TabView.vue';
 import fb from '../firebase-adapter';
@@ -91,3 +77,17 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus" scoped>
+.container
+  width 100vw
+  height 100vh
+  & .content
+    height calc(100vh - 60px)
+  & .login-button
+    padding 10px 10px 10px 10px
+    font-size 1.2rem
+    background-color #538D8F
+    border-radius 5px
+    color white
+</style>
