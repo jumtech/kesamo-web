@@ -156,7 +156,6 @@ $modal-item-top-margin = 20px
   & .input
     margin 5px 0 0 0
     & input, textarea
-      box-sizing border-box
       width 100%
       padding 5px
       border 1px solid #BFBFBF

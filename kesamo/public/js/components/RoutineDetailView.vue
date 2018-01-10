@@ -186,7 +186,6 @@ export default {
     & .arrow-icon
       width 15px
       height 15px
-      box-sizing border-box
       border 15px solid transparent
       &.left
         margin-right 90px
