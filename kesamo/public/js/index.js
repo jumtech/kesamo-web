@@ -21,7 +21,7 @@ window.onload = () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("./dist/serviceWorker.js")
       .then(( /*registration*/ ) => {
-        console.log("serviceWorker registed.");
+        console.info("serviceWorker registed.");
       }).catch((error) => {
         console.warn("serviceWorker error.", error);
       });

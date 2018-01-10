@@ -41,7 +41,6 @@ export default {
     if (!this.user) this.isUserLoading = true;
     fb.addAuthStateChangedEventListener((user) => {
       this.isUserLoading = false;
-      console.log('user: ',user);
       if (user) {
         this.user = {
           uid: user.uid,
@@ -49,9 +48,7 @@ export default {
           email: user.email,
           photoURL: user.photoURL,
         };
-        console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
-          console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
           this.routines = snapshot.val() ? new Routines(snapshot.val()) : new Routines([]);
         });
       }
@@ -61,7 +58,7 @@ export default {
     login() {
       fb.login((result) => {
         if (result && result.user) {
-          console.log('login succeeded.');
+          console.info('login succeeded.');
         }
       },(err) => {
         console.warn('login error: ', err);
