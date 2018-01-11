@@ -32,7 +32,6 @@ export default {
   width 100%
   height 60px
 .tab-item
-  box-sizing border-box
   flex-grow 1
   text-align center
   display flex
@@ -49,7 +48,6 @@ export default {
   & .tab-image
     width 21px
     height 36px
-    box-sizing border-box
     &.square
       border solid 3px #BFBFBF
     &.border

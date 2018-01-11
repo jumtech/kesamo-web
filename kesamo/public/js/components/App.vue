@@ -1,10 +1,10 @@
-<template lang="pug">
+<template lang='pug'>
 .container
   tab-view
   .ksm_center-without-header(v-if='isUserLoading')
     loading
   template(v-else)
-    router-view.content(v-if="user"
+    router-view.content(v-if='user'
       :routines='routines'
       :user='user'
       :currentFilterdRoutineIndex='currentFilterdRoutineIndex'
@@ -13,23 +13,9 @@
       @current-routine-index-updated='updateCurrentRoutineIndex'
     )
     .ksm_center-without-header(v-else)
-      button.login-button(@click="login")
+      button.login-button(@click='login')
         | Login with Google
 </template>
-
-<style lang="stylus" scoped>
-.container
-  width 100vw
-  height 100vh
-  & .content
-    height calc(100vh - 60px)
-  & .login-button
-    padding 10px 10px 10px 10px
-    font-size 1.2rem
-    background-color #538D8F
-    border-radius 5px
-    color white
-</style>
 
 <script>
 import TabView from './TabView.vue';
@@ -55,7 +41,6 @@ export default {
     if (!this.user) this.isUserLoading = true;
     fb.addAuthStateChangedEventListener((user) => {
       this.isUserLoading = false;
-      console.log('user: ',user);
       if (user) {
         this.user = {
           uid: user.uid,
@@ -63,9 +48,7 @@ export default {
           email: user.email,
           photoURL: user.photoURL,
         };
-        console.log('filterd user: ',this.user);
         fb.addValueEventListener('routines', (snapshot) => {
-          console.log('[addValueEventListener] snapshot.val(): ',snapshot.val());
           this.routines = snapshot.val() ? new Routines(snapshot.val()) : new Routines([]);
         });
       }
@@ -75,7 +58,7 @@ export default {
     login() {
       fb.login((result) => {
         if (result && result.user) {
-          console.log('login succeeded.');
+          console.info('login succeeded.');
         }
       },(err) => {
         console.warn('login error: ', err);
@@ -91,3 +74,17 @@ export default {
   }
 };
 </script>
+
+<style lang='stylus' scoped>
+.container
+  width 100vw
+  height 100vh
+  & .content
+    height calc(100vh - 60px)
+  & .login-button
+    padding 10px 10px 10px 10px
+    font-size 1.2rem
+    background-color #538D8F
+    border-radius 5px
+    color white
+</style>

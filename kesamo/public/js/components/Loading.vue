@@ -1,4 +1,4 @@
-<template lang="pug">
+<template lang='pug'>
 .spinner
   .rect1
   .rect2
@@ -20,7 +20,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang='stylus' scoped>
 .spinner
   margin 100px auto
   width 50px

@@ -3,7 +3,6 @@ import { FIREBASE_CONFIG } from  './_config';
 
 export default {
   init() {
-    console.log("init");
     const config = {
       apiKey: FIREBASE_CONFIG.API_KEY,
       authDomain: FIREBASE_CONFIG.AUTH_DOMAIN,
@@ -12,8 +11,6 @@ export default {
       storageBucket: FIREBASE_CONFIG.STORAGE_BUCKET,
       messagingSenderId: FIREBASE_CONFIG.MESSAGING_SENDER_ID
     };
-    console.log("config: ",config);
-    console.log("firebase: ",firebase);
     firebase.initializeApp(config);
   },
   login(cb, cb_err) {
