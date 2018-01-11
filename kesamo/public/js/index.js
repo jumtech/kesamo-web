@@ -19,11 +19,11 @@ window.onload = () => {
     render: h => h(App)
   });
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("./dist/serviceWorker.js")
+    navigator.serviceWorker.register('./dist/serviceWorker.js')
       .then(( /*registration*/ ) => {
-        console.info("serviceWorker registed.");
+        console.info('serviceWorker registed.');
       }).catch((error) => {
-        console.warn("serviceWorker error.", error);
+        console.warn('serviceWorker error.', error);
       });
   }
 };

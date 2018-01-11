@@ -1,10 +1,10 @@
-<template lang="pug">
+<template lang='pug'>
 .container
   tab-view
   .ksm_center-without-header(v-if='isUserLoading')
     loading
   template(v-else)
-    router-view.content(v-if="user"
+    router-view.content(v-if='user'
       :routines='routines'
       :user='user'
       :currentFilterdRoutineIndex='currentFilterdRoutineIndex'
@@ -13,7 +13,7 @@
       @current-routine-index-updated='updateCurrentRoutineIndex'
     )
     .ksm_center-without-header(v-else)
-      button.login-button(@click="login")
+      button.login-button(@click='login')
         | Login with Google
 </template>
 
@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang='stylus' scoped>
 .container
   width 100vw
   height 100vh

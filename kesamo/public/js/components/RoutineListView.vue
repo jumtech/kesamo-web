@@ -14,7 +14,7 @@ mixin list-items
         .list-item-content-main(@touchstart='startEditIfDoubleTapped(i, $event)')
           p.title: | {{routine.title}}
           .week-rects(v-if='routine.isForOnlySomeDays')
-            .rect(v-for="n in [1,2,3,4,5,6,0]" :class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(n)}')
+            .rect(v-for='n in [1,2,3,4,5,6,0]' :class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(n)}')
         .icon.edit(@click='showEditModal(i)')
           i.fa.fa-pencil(aria-hidden='true')
 
@@ -121,7 +121,7 @@ export default {
     },
     isRoutineLoading(val) {
       if (!this.isRoutineLoading) {
-        // disable "pull-to-refresh" action of android's chrome
+        // disable 'pull-to-refresh' action of android's chrome
         this.$nextTick(() => {
           if(window.navigator.userAgent.toLowerCase().indexOf('chrome')!=-1){var i,s,o;i=document;i.getElementsByTagName('html')[0].style.height='100%';s=i.getElementsByTagName('body')[0].style;s.height='100%';s.overflowY='hidden';o=i.getElementById('p2rfix').style;o.height='100%';o.overflow='auto';}
         });
@@ -272,7 +272,7 @@ $icon-side-padding = 20px
     &-content
       display flex
       align-items center
-      width "calc(100vw - (%s + %s * 2))" % ($icon-raw-width $icon-side-padding)
+      width 'calc(100vw - (%s + %s * 2))' % ($icon-raw-width $icon-side-padding)
       &-main
         padding 20px 10px 20px 20px
         flex-grow 1
@@ -294,7 +294,7 @@ $icon-side-padding = 20px
             &.on
               background-color #538D8F
     & .icon
-      width "calc(%s + %s * 2)" % ($icon-raw-width $icon-side-padding)
+      width 'calc(%s + %s * 2)' % ($icon-raw-width $icon-side-padding)
       font-size 1.6rem
       padding 20px $icon-side-padding
       &.delete

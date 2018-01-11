@@ -1,1 +1,1 @@
-console.info("hello serviceWorker");
+console.info('hello serviceWorker');
