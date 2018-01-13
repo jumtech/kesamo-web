@@ -1,7 +1,7 @@
 {
   "name": "kesamo",
   "version": "0.0.0",
-  "description": "kesamo is the best morning routine manager.",
+  "description": "kesamo is the best web app for Morning Routine Management.",
   "private": true,
   "scripts": {
     "start": "node ./kesamo/bin/www",
