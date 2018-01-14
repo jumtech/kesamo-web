@@ -41,8 +41,6 @@ import fb from '../firebase-adapter';
 import Routines from '../models/Routines';
 import Loading from './Loading.vue';
 import Modal from './Modal.vue';
-const KEYCODE_ENTER = 13;
-const KEYCODE_ESC = 27;
 const USE_MODAL = true;
 let timer = null;
 
@@ -88,28 +86,6 @@ export default {
         this.draggingIndex = null;
       }
     });
-
-    $(document).keyup((e) => {
-      switch (e.which) {
-        case KEYCODE_ENTER:
-          if (this.editingIndex !== null) {
-              const i = this.editingIndex;
-              if (!this.routines_[i] || !this.endEditIfNeeded(this.editingIndex)) return;
-              if (i !== this.routines_.length - 1) {
-                this.select(i + 1);
-              } else {
-                this.createRoutine(this.routines_.length);
-              }
-            } else if (this.selectedIndex !== null) {
-              this.startEdit(this.selectedIndex);
-              return;
-            }
-          break;
-        case KEYCODE_ESC:
-          this.unselect();
-          break;
-      }
-   });
   },
   watch: {
     routines: {
