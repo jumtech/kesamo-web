@@ -13,8 +13,14 @@
       @current-routine-index-updated='updateCurrentRoutineIndex'
     )
     .ksm_center-without-header(v-else)
-      button.login-button(@click='login')
-        | Login with Google
+      .login-container
+        button.login-button(@click='login')
+          span Sign In with with Google
+        .exemption-from-responsibility
+          span
+            | By signing up, you are indicating that you have read and aggree to the 
+            a(href='#') Privacy Policy
+            | .
 </template>
 
 <script>
@@ -81,10 +87,22 @@ export default {
   height 100vh
   & .content
     height calc(100vh - 60px)
-  & .login-button
-    padding 10px 10px 10px 10px
-    font-size 1.2rem
-    background-color #538D8F
-    border-radius 5px
-    color white
+  & .login-container
+    width 290px
+    display flex
+    flex-direction column
+    & .login-button
+      padding 10px 10px 10px 10px
+      font-size 1.2rem
+      background-color #538D8F
+      border-radius 5px
+      color white
+    & .exemption-from-responsibility
+      text-align center
+      margin 30px 0 0 0
+      & span
+        color #7F7F7F
+        font-size 0.8rem
+        & a
+          text-decoration underline
 </style>
