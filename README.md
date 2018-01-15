@@ -1,5 +1,5 @@
 # kesamo
-kesamo is the best web app for Morning Routine Management.
+"kesamo" is The Best Web App for your Morning Routine Management.
 
 ## How to use
 Access https://app.kesamo.tech
