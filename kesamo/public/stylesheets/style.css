@@ -13,9 +13,37 @@ a {
   color: inherit;
 }
 .ksm_center-without-header {
-  width: 100vw;;
+  width: 100vw;
   height: calc(100vh - 60px);
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.privacy-policy {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+.privacy-policy .logo {
+  width: 64px;
+  height: 64px;
+  margin: 20px 0 20px 0;
+}
+
+.privacy-policy .title {
+  font-size: 1.2rem;
+  margin: 20px 0 20px 0;
+}
+.privacy-policy .content {
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+  margin: 20px 0 20px 0;
+}
+.privacy-policy .back_link {
+  text-decoration: underline;
+  margin: 20px 0 20px 0;
 }
