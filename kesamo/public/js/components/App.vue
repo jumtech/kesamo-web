@@ -19,7 +19,7 @@
         .exemption-from-responsibility
           span
             | By signing up, you are indicating that you have read and aggree to the 
-            a(href='#') Privacy Policy
+            a(href='/privacy-policy') Privacy Policy
             | .
 </template>
 
