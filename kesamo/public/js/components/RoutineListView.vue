@@ -220,9 +220,11 @@ export default {
       };
       this.showModal = true;
     },
-    saveEditModalResult(result) {
+    saveEditModalResult(command, result) {
       this.showModal = false;
-      if (result) {
+      if (command === 'DELETE') {
+        this.deleteRoutine(this.editingIndex);
+      } else if (command === 'SAVE' && result) {
         this.routines_[this.editingIndex].title = result.title;
         this.routines_[this.editingIndex].description = result.description;
         this.routines_[this.editingIndex].daysOfTheWeek = result.daysOfTheWeek;

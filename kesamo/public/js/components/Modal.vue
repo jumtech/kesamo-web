@@ -1,10 +1,13 @@
 <template lang='pug'>
 transition(name='modal')
-  .modal-mask(@click='emitCloseEvent(false)')
+  .modal-mask(@click='emitCloseEvent("CANCEL")')
     .modal-wrapper(name)
       .modal-container(@click.stop='')
         .modal-header
           | {{heading}}
+        .delete(@click='deleteRoutine')
+          i.fa.fa-trash(aria-hidden='true' v-if='!isToDelete')
+          span(v-else) delete?
         .modal-body
           .form-group
             .label
@@ -32,10 +35,10 @@ transition(name='modal')
                   label(:for='DAY.SHORT_NAME'): | {{DAY.SHORT_NAME}}
         .modal-footer
           .modal-cancel-button
-            button(@click='emitCloseEvent(false)')
+            button(@click='emitCloseEvent("CANCEL")')
               | Cancel
           .modal-ok-button
-            button(@click='emitCloseEvent(true)')
+            button(@click='emitCloseEvent("SAVE")')
               | OK
 </template>
 
@@ -64,6 +67,7 @@ export default {
       description_: '',
       daysOfTheWeek_: [],
       isForOnlySomeDays_: false,
+      isToDelete: false,
     };
   },
   created() {
@@ -80,19 +84,35 @@ export default {
     }
   },
   methods: {
-    emitCloseEvent(isOK) {
-      const days =
-        this.daysOfTheWeek_
-          .map((v) => Number(v))
-          .sort((a, b) => {return a < b ? -1 : 1});
-      const result = {
-        title: this.title_,
-        description: this.description_,
-        isForOnlySomeDays: this.isForOnlySomeDays_,
-        daysOfTheWeek: days,
+    emitCloseEvent(command) {
+      switch (command) {
+        case 'CANCEL':
+        case 'DELETE':
+          this.$emit('modal-closed', command, null);
+          break;
+        case 'SAVE':
+          const days =
+            this.daysOfTheWeek_
+              .map((v) => Number(v))
+              .sort((a, b) => {return a < b ? -1 : 1});
+          const result = {
+            title: this.title_,
+            description: this.description_,
+            isForOnlySomeDays: this.isForOnlySomeDays_,
+            daysOfTheWeek: days,
+          }
+          this.$emit('modal-closed', command, result);
+          break;
       }
-      this.$emit('modal-closed', isOK ? result : null);
     },
+    deleteRoutine() {
+      if (!this.isToDelete) {
+        this.isToDelete = true;
+      } else {
+        this.isToDelete = false;
+        this.emitCloseEvent('DELETE');
+      }
+    }
   },
 };
 </script>
@@ -115,6 +135,7 @@ $modal-item-top-margin = 20px
   display table-cell
   vertical-align middle
 .modal-container
+  position relative
   width $modal-width
   margin 0 auto 0 auto
   padding $modal-padding
@@ -126,6 +147,15 @@ $modal-item-top-margin = 20px
   font-size 1.2rem
   margin 0
   color #538D8F
+.delete
+  position absolute
+  top 30px
+  right 30px
+  color #B80228
+  font-size 1.2rem
+  & span
+    font-size 1.0rem
+    text-decoration underline
 .modal-body
   margin $modal-item-top-margin 0
 .modal-footer
