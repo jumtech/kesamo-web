@@ -1,6 +1,6 @@
 <template lang='pug'>
 transition(name='modal')
-  .modal-mask(@click='emitCloseEvent(false)')
+  .modal-mask(@click='emitCloseEvent("CANCEL")')
     .modal-wrapper(name)
       .modal-container(@click.stop='')
         .modal-header
@@ -35,10 +35,10 @@ transition(name='modal')
                   label(:for='DAY.SHORT_NAME'): | {{DAY.SHORT_NAME}}
         .modal-footer
           .modal-cancel-button
-            button(@click='emitCloseEvent(false)')
+            button(@click='emitCloseEvent("CANCEL")')
               | Cancel
           .modal-ok-button
-            button(@click='emitCloseEvent(true)')
+            button(@click='emitCloseEvent("SAVE")')
               | OK
 </template>
 
@@ -84,24 +84,33 @@ export default {
     }
   },
   methods: {
-    emitCloseEvent(isOK) {
-      const days =
-        this.daysOfTheWeek_
-          .map((v) => Number(v))
-          .sort((a, b) => {return a < b ? -1 : 1});
-      const result = {
-        title: this.title_,
-        description: this.description_,
-        isForOnlySomeDays: this.isForOnlySomeDays_,
-        daysOfTheWeek: days,
+    emitCloseEvent(command) {
+      switch (command) {
+        case 'CANCEL':
+        case 'DELETE':
+          this.$emit('modal-closed', command, null);
+          break;
+        case 'SAVE':
+          const days =
+            this.daysOfTheWeek_
+              .map((v) => Number(v))
+              .sort((a, b) => {return a < b ? -1 : 1});
+          const result = {
+            title: this.title_,
+            description: this.description_,
+            isForOnlySomeDays: this.isForOnlySomeDays_,
+            daysOfTheWeek: days,
+          }
+          this.$emit('modal-closed', command, result);
+          break;
       }
-      this.$emit('modal-closed', isOK ? result : null);
     },
     deleteRoutine() {
-      if (this.isToDelete) {
-        this.isToDelete = false;
-      } else {
+      if (!this.isToDelete) {
         this.isToDelete = true;
+      } else {
+        this.isToDelete = false;
+        this.emitCloseEvent('DELETE');
       }
     }
   },
