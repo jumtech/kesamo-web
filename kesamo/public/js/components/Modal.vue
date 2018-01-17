@@ -5,6 +5,9 @@ transition(name='modal')
       .modal-container(@click.stop='')
         .modal-header
           | {{heading}}
+        .delete(@click='deleteRoutine')
+          i.fa.fa-trash(aria-hidden='true' v-if='!isToDelete')
+          span(v-else) delete?
         .modal-body
           .form-group
             .label
@@ -64,6 +67,7 @@ export default {
       description_: '',
       daysOfTheWeek_: [],
       isForOnlySomeDays_: false,
+      isToDelete: false,
     };
   },
   created() {
@@ -93,6 +97,13 @@ export default {
       }
       this.$emit('modal-closed', isOK ? result : null);
     },
+    deleteRoutine() {
+      if (this.isToDelete) {
+        this.isToDelete = false;
+      } else {
+        this.isToDelete = true;
+      }
+    }
   },
 };
 </script>
@@ -115,6 +126,7 @@ $modal-item-top-margin = 20px
   display table-cell
   vertical-align middle
 .modal-container
+  position relative
   width $modal-width
   margin 0 auto 0 auto
   padding $modal-padding
@@ -126,6 +138,15 @@ $modal-item-top-margin = 20px
   font-size 1.2rem
   margin 0
   color #538D8F
+.delete
+  position absolute
+  top 30px
+  right 30px
+  color #B80228
+  font-size 1.2rem
+  & span
+    font-size 1.0rem
+    text-decoration underline
 .modal-body
   margin $modal-item-top-margin 0
 .modal-footer
