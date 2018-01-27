@@ -29,6 +29,14 @@ export default {
   created() {
     this.title = this.routine_.title;
   },
+  watch: {
+    routine_: {
+      handler(val) {
+        this.title = this.routine_.title;
+      },
+      deep: true
+    },
+  }
 };
 </script>
 
