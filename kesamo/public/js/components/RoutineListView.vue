@@ -1,23 +1,16 @@
 <template lang='pug'>
 mixin list-items
-  li.list-item(v-for='(routine, i) in routines_' :class='{selected: selectedIndex === i, dragged: draggingIndex === i}' :id='i')
-    template(v-if='editingIndex === i')
-      .list-item-content-main
-        p.title
-          input(:id='"input" + i' v-model='routines_[i].title' @blur='endEditIfNeeded(i)')
-      .icon.delete(@click='deleteRoutine(i)')
-        i.fa.fa-trash(aria-hidden='true')
-    template(v-else)
-      .icon.drag(@click='enableDrag(i)')
-        i.fa.fa-bars(aria-hidden='true')
-      .list-item-content
-        .list-item-content-main(@touchstart='startEditIfDoubleTapped(i, $event)')
-          p.title: | {{routine.title}}
-          .week-rects(v-if='routine.isForOnlySomeDays')
-            .rect(v-for='n in [1,2,3,4,5,6,0]' :class='{on: routine.daysOfTheWeek && routine.daysOfTheWeek.includes(n)}')
-        .icon.edit(@click='showEditModal(i)')
-          i.fa.fa-pencil(aria-hidden='true')
-
+  .list-item_wrapper(v-for='(routine_, i) in routines_')
+    routine-list-item(
+      :routine_='routine_'
+      :i='i'
+      :selectedIndex='selectedIndex' :editingIndex='editingIndex' :draggingIndex='draggingIndex'
+      @save-quick-edit-result='saveQuickEditResult'
+      @delete-routine='deleteRoutine'
+      @enable-drag='enableDrag'
+      @start-edit-if-double-tapped='startEditIfDoubleTapped'
+      @show-edit-modal='showEditModal'
+    )
 .container
   .ksm_center-without-header(v-if='isRoutineLoading')
     loading
@@ -37,17 +30,20 @@ mixin list-items
 
 <script>
 import Draggable from 'vuedraggable';
-import fb from '../firebase-adapter';
-import Routines from '../models/Routines';
+import RoutineListItem from './RoutineListItem.vue'
 import Loading from './Loading.vue';
 import Modal from './Modal.vue';
+
+import fb from '../firebase-adapter';
+import Routines from '../models/Routines';
 const USE_MODAL = true;
 let timer = null;
 
 export default {
   components: {
-    Loading,
     Draggable,
+    RoutineListItem,
+    Loading,
     Modal,
   },
   props: {
@@ -231,65 +227,19 @@ export default {
         this.routines_[this.editingIndex].isForOnlySomeDays = result.isForOnlySomeDays;
       }
       this.endEdit(this.editingIndex);
+    },
+    saveQuickEditResult(i, title) {
+      this.routines_[i].title = title;
+      this.endEditIfNeeded(i);
     }
   }
 };
 </script>
 
 <style lang='stylus' scoped>
-$icon-raw-width = 20px
-$icon-side-padding = 20px
 .list
   overflow scroll
   height calc(100vh - 60px)
-  & .list-item
-    display flex
-    align-items center
-    border solid 1px #BFBFBF
-    background-color #FFFFFF
-    &-content
-      display flex
-      align-items center
-      width 'calc(100vw - (%s + %s * 2))' % ($icon-raw-width $icon-side-padding)
-      &-main
-        padding 20px 10px 20px 20px
-        flex-grow 1
-        & .title
-          font-size 1.6rem
-          word-break break-all
-          & input
-            width 100%
-            font-size 1.6rem
-        & .week-rects
-          height 10px
-          margin-top 5px
-          display flex
-          & .rect
-            width 10px
-            height 10px
-            margin-right 10px
-            background-color #EBF7DA
-            &.on
-              background-color #538D8F
-    & .icon
-      width 'calc(%s + %s * 2)' % ($icon-raw-width $icon-side-padding)
-      font-size 1.6rem
-      padding 20px $icon-side-padding
-      &.delete
-        color #B80228
-    &.selected
-      background-color #EBF7DA
-      & .list-item-content
-        background-color #EBF7DA
-      &.dragged
-        background-color #538D8F
-        box-shadow 2px 2px 20px #7F7F7F
-        position relative
-        & .list-item-content
-          background-color #EBF7DA
-        & .icon.drag
-          background-color #538D8F
-          color #EBF7DA
   & .empty
     width 100%
     height 100px
